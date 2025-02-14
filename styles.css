@@ -17,40 +17,8 @@ h1, h2 {
     text-align: center;
 }
 
-#news-form, #news-board {
+#news-board {
     margin: 20px 0;
-}
-
-form label {
-    display: block;
-    margin: 10px 0 5px;
-}
-
-form input[type="text"], form textarea, form input[type="password"] {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
-
-form input[type="file"] {
-    margin-bottom: 10px;
-}
-
-form button {
-    display: block;
-    width: 100%;
-    padding: 10px;
-    background-color: #28a745;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-form button:hover {
-    background-color: #218838;
 }
 
 #news-list {
@@ -73,17 +41,4 @@ form button:hover {
 
 .news-item .attachment {
     margin-top: 10px;
-}
-
-.news-item .delete-button {
-    background-color: #dc3545;
-    color: #fff;
-    border: none;
-    padding: 5px 10px;
-    cursor: pointer;
-    border-radius: 5px;
-}
-
-.news-item .delete-button:hover {
-    background-color: #c82333;
 }

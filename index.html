@@ -9,20 +9,6 @@
 <body>
     <div class="container">
         <h1>Bacheca News</h1>
-        <div id="news-form">
-            <h2>Scrivi una Nuova News</h2>
-            <form id="newsForm" method="post" enctype="multipart/form-data">
-                <label for="title">Titolo:</label>
-                <input type="text" id="title" name="title" required><br>
-                <label for="content">Contenuto:</label>
-                <textarea id="content" name="content" required></textarea><br>
-                <label for="attachment">Allegato:</label>
-                <input type="file" id="attachment" name="attachment"><br>
-                <label for="password">Password:</label>
-                <input type="password" id="password" name="password" required><br>
-                <button type="submit">Pubblica</button>
-            </form>
-        </div>
         <div id="news-board">
             <h2>Ultime News</h2>
             <div id="news-list">
@@ -30,6 +16,7 @@
             </div>
         </div>
     </div>
+    <script src="config.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
