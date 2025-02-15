@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bacheca News - Shipup</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Bacheca News</h1>
+        <div id="news-form">
+            <h2>Scrivi una Nuova News</h2>
+            <form id="newsForm">
+                <label for="title">Titolo:</label>
+                <input type="text" id="title" name="title" required><br>
+                <label for="content">Contenuto:</label>
+                <textarea id="content" name="content" required></textarea><br>
+                <label for="attachment">Allegato (URL):</label>
+                <input type="url" id="attachment" name="attachment"><br>
+                <button type="submit">Pubblica</button>
+            </form>
+        </div>
+        <div id="news-board">
+            <h2>Ultime News</h2>
+            <div id="news-list">
+                <!-- Le news verranno caricate qui -->
+            </div>
+        </div>
+    </div>
+    <script src="config.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
