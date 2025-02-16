@@ -3,32 +3,265 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bacheca News - Shipup</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Ship-Up by Matteo Valdez</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+
+        .post {
+            border: 1px solid #ddd;
+            margin-bottom: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            background-color: #fff;
+            position: relative;
+        }
+
+        .admin-form, .login-form {
+            background-color: #f5f5f5;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 5px;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 5px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .post-actions {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+
+        .edit-btn, .delete-btn {
+            padding: 5px 10px;
+            margin-left: 5px;
+            font-size: 0.8em;
+        }
+
+        .delete-btn {
+            background-color: #dc3545;
+        }
+
+        .edit-btn {
+            background-color: #ffc107;
+            color: black;
+        }
+
+        .notification {
+            background-color: #dff0d8;
+            color: #3c763d;
+            padding: 10px;
+            border: 1px solid #d6e9c6;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+
+        .error {
+            background-color: #f2dede;
+            color: #a94442;
+            padding: 10px;
+            border: 1px solid #ebccd1;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+
+        header, footer {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        footer {
+            margin-top: 40px;
+            font-size: 0.9em;
+            color: #777;
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Bacheca News</h1>
-        <div id="news-form">
-            <h2>Scrivi una Nuova News</h2>
-            <form id="newsForm">
-                <label for="title">Titolo:</label>
-                <input type="text" id="title" name="title" required><br>
-                <label for="content">Contenuto:</label>
-                <textarea id="content" name="content" required></textarea><br>
-                <label for="attachment">Allegato (URL):</label>
-                <input type="url" id="attachment" name="attachment"><br>
-                <button type="submit">Pubblica</button>
-            </form>
-        </div>
-        <div id="news-board">
-            <h2>Ultime News</h2>
-            <div id="news-list">
-                <!-- Le news verranno caricate qui -->
-            </div>
-        </div>
+    <header>
+        <h1>Ship-Up by Matteo Valdez</h1>
+    </header>
+
+    <!-- Notification Area -->
+    <div id="notification" class="notification hidden"></div>
+
+    <!-- Login Form -->
+    <div id="loginForm" class="login-form">
+        <h2>Login Manager</h2>
+        <input type="password" id="password" placeholder="Password">
+        <button onclick="login()">Accedi</button>
     </div>
-    <script src="config.js"></script>
-    <script src="script.js"></script>
+
+    <!-- Admin Form -->
+    <div id="adminForm" class="admin-form hidden">
+        <h2>Inserisci nuovo post</h2>
+        <input type="text" id="postTitle" placeholder="Titolo" required>
+        <textarea id="postContent" placeholder="Contenuto del post" rows="4" required></textarea>
+        <input type="hidden" id="editingId" value="">
+        <button onclick="addPost()" id="submitButton">Pubblica</button>
+        <button onclick="logout()" style="background-color: #dc3545;">Logout</button>
+    </div>
+
+    <!-- Posts Area -->
+    <div id="posts"></div>
+
+    <footer>
+        <p>© 2025 Ship-Up by Matteo Valdez. Tutti i diritti riservati.</p>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js"></script>
+    <script>
+        const MANAGER_PASSWORD_HASH = '5f4dcc3b5aa765d61d8327deb882cf99'; // hash di "password"
+
+        function hashString(str) {
+            return CryptoJS.MD5(str).toString();
+        }
+
+        function displayNotification(message, isError = false) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = isError ? 'error' : 'notification';
+            notification.classList.remove('hidden');
+            setTimeout(() => notification.classList.add('hidden'), 3000);
+        }
+
+        function login() {
+            const password = document.getElementById('password').value;
+            const hashedPassword = hashString(password);
+            if (hashedPassword === MANAGER_PASSWORD_HASH) {
+                document.getElementById('loginForm').classList.add('hidden');
+                document.getElementById('adminForm').classList.remove('hidden');
+                localStorage.setItem('isLoggedIn', 'true');
+                displayNotification('Login effettuato con successo');
+            } else {
+                displayNotification('Password non corretta', true);
+            }
+        }
+
+        function logout() {
+            document.getElementById('loginForm').classList.remove('hidden');
+            document.getElementById('adminForm').classList.add('hidden');
+            localStorage.removeItem('isLoggedIn');
+            displayNotification('Logout effettuato con successo');
+        }
+
+        function addPost() {
+            const title = document.getElementById('postTitle').value;
+            const content = document.getElementById('postContent').value;
+            const editingId = document.getElementById('editingId').value;
+
+            if (!title || !content) {
+                displayNotification('Compilare tutti i campi', true);
+                return;
+            }
+
+            let posts = JSON.parse(localStorage.getItem('posts') || '[]');
+
+            if (editingId) {
+                // Modifica post esistente
+                const index = posts.findIndex(post => post.id == editingId);
+                if (index !== -1) {
+                    posts[index].title = title;
+                    posts[index].content = content;
+                    posts[index].edited = true;
+                }
+                document.getElementById('editingId').value = '';
+                document.getElementById('submitButton').textContent = 'Pubblica';
+                displayNotification('Post aggiornato con successo');
+            } else {
+                // Nuovo post
+                const post = {
+                    id: Date.now(),
+                    title: title,
+                    content: content,
+                    date: new Date().toLocaleString()
+                };
+                posts.unshift(post);
+                displayNotification('Post pubblicato con successo');
+            }
+
+            localStorage.setItem('posts', JSON.stringify(posts));
+            document.getElementById('postTitle').value = '';
+            document.getElementById('postContent').value = '';
+            displayPosts();
+        }
+
+        function editPost(id) {
+            const posts = JSON.parse(localStorage.getItem('posts') || '[]');
+            const post = posts.find(post => post.id == id);
+            if (post) {
+                document.getElementById('postTitle').value = post.title;
+                document.getElementById('postContent').value = post.content;
+                document.getElementById('editingId').value = post.id;
+                document.getElementById('submitButton').textContent = 'Aggiorna';
+                document.getElementById('adminForm').scrollIntoView();
+            }
+        }
+
+        function deletePost(id) {
+            if (confirm('Sei sicuro di voler eliminare questo post?')) {
+                let posts = JSON.parse(localStorage.getItem('posts') || '[]');
+                posts = posts.filter(post => post.id != id);
+                localStorage.setItem('posts', JSON.stringify(posts));
+                displayPosts();
+                displayNotification('Post eliminato con successo');
+            }
+        }
+
+        function displayPosts() {
+            const postsContainer = document.getElementById('posts');
+            const posts = JSON.parse(localStorage.getItem('posts') || '[]');
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+
+            postsContainer.innerHTML = posts.map(post => `
+                <div class="post">
+                    ${isLoggedIn ? `
+                        <div class="post-actions">
+                            <button class="edit-btn" onclick="editPost(${post.id})">Modifica</button>
+                            <button class="delete-btn" onclick="deletePost(${post.id})">Elimina</button>
+                        </div>
+                    ` : ''}
+                    <div class="post-header">
+                        <div class="post-date">${post.date}${post.edited ? ' (modificato)' : ''}</div>
+                        <div class="post-title">${post.title}</div>
+                    </div>
+                    <div class="post-content">${post.content}</div>
+                </div>
+            `).join('');
+        }
+
+        window.onload = function() {
+            if (localStorage.getItem('isLoggedIn') === 'true') {
+                document.getElementById('loginForm').classList.add('hidden');
+                document.getElementById('adminForm').classList.remove('hidden');
+            }
+            displayPosts();
+        }
+    </script>
 </body>
 </html>
