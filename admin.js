@@ -2,29 +2,40 @@ const supabaseUrl = "https://amxtzqdawysnqpjnsgic.supabase.co";
 const supabaseKey = "TUAPIKEY";
 const supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
+// PUBBLICA UN NUOVO POST
 async function publishPost() {
-    const title = document.getElementById("postTitle").value;
-    const content = document.getElementById("postContent").value;
+    const title = document.getElementById("postTitle").value.trim();
+    const content = document.getElementById("postContent").value.trim();
 
     if (!title || !content) {
-        alert("⚠️ Inserisci titolo e contenuto!");
+        alert("⚠️ Inserisci un titolo e un contenuto!");
         return;
     }
 
-    const { error } = await supabase.from("posts").insert([{ title, content, likes: 0, dislikes: 0 }]);
+    const { error } = await supabase.from("posts").insert([{ 
+        title, 
+        content, 
+        likes: 0, 
+        dislikes: 0, 
+        created_at: new Date().toISOString() 
+    }]);
 
     if (error) {
-        console.error("Errore nella pubblicazione:", error);
-        return;
+        alert("❌ Errore nella pubblicazione del post!");
+        console.error(error);
+    } else {
+        document.getElementById("postTitle").value = "";
+        document.getElementById("postContent").value = "";
+        fetchAdminPosts();
     }
-
-    document.getElementById("postTitle").value = "";
-    document.getElementById("postContent").value = "";
-    fetchPosts();
 }
 
-async function fetchPosts() {
-    const { data, error } = await supabase.from("posts").select("*").order("id", { ascending: false });
+// RECUPERA I POST PER L'ADMIN
+async function fetchAdminPosts() {
+    const { data, error } = await supabase
+        .from("posts")
+        .select("*")
+        .order("created_at", { ascending: false });
 
     if (error) {
         console.error("Errore nel recupero dei post:", error);
@@ -42,42 +53,49 @@ async function fetchPosts() {
             <p>${post.content}</p>
             <small>📅 ${new Date(post.created_at).toLocaleString()}</small>
             <div class="actions">
-                <button class="edit-btn" onclick="editPost(${post.id})">✏️ Modifica</button>
-                <button class="delete-btn" onclick="deletePost(${post.id})">🗑 Elimina</button>
+                <button onclick="editPost(${post.id}, '${post.content}')">✏️ Modifica</button>
+                <button onclick="deletePost(${post.id})">🗑 Elimina</button>
             </div>
         `;
-
         postList.appendChild(postElement);
     });
 }
 
-async function editPost(postId) {
-    const newContent = prompt("Modifica il contenuto del post:");
-    if (!newContent) return;
+// MODIFICA UN POST
+async function editPost(postId, oldContent) {
+    const newContent = prompt("Modifica il contenuto del post:", oldContent);
+    if (!newContent || newContent.trim() === oldContent) return;
 
-    const { error } = await supabase.from("posts").update({ content: newContent }).eq("id", postId);
+    const { error } = await supabase
+        .from("posts")
+        .update({ content: newContent.trim() })
+        .eq("id", postId);
 
     if (error) {
-        console.error("Errore nella modifica del post:", error);
-        return;
+        alert("❌ Errore nella modifica del post!");
+        console.error(error);
+    } else {
+        fetchAdminPosts();
     }
-
-    fetchPosts();
 }
 
+// ELIMINA UN POST
 async function deletePost(postId) {
-    const { error } = await supabase.from("posts").delete().eq("id", postId);
+    const confirmDelete = confirm("❗ Sei sicuro di voler eliminare questo post?");
+    if (!confirmDelete) return;
+
+    const { error } = await supabase
+        .from("posts")
+        .delete()
+        .eq("id", postId);
 
     if (error) {
-        console.error("Errore nell'eliminare il post:", error);
-        return;
+        alert("❌ Errore nell'eliminazione del post!");
+        console.error(error);
+    } else {
+        fetchAdminPosts();
     }
-
-    fetchPosts();
 }
 
-function logout() {
-    window.location.href = "index.html";
-}
-
-fetchPosts();
+// CARICA I POST QUANDO LA PAGINA VIENE APERTA
+fetchAdminPosts();
