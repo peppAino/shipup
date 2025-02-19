@@ -1,17 +1,20 @@
+const SUPABASE_URL = "https://amxtzqdawysnqpjnsgic.supabase.co";
+const SUPABASE_API_KEY = "TU_API_KEY";
+
 document.addEventListener("DOMContentLoaded", loadPosts);
 
 function loadPosts() {
-    fetch('https://amxtzqdawysnqpjnsgic.supabase.co/rest/v1/posts', {
+    fetch(`${SUPABASE_URL}/rest/v1/posts?select=*`, {
         headers: {
-            'apikey': 'TU_API_KEY',
-            'Authorization': 'Bearer TU_API_KEY'
+            "apikey": SUPABASE_API_KEY,
+            "Authorization": `Bearer ${SUPABASE_API_KEY}`
         }
     })
     .then(response => response.json())
     .then(posts => {
         const container = document.getElementById("posts-container");
-        container.innerHTML = "";
-        
+        container.innerHTML = "";  // Pulisce i post prima di ricaricare
+
         posts.reverse().forEach(post => {
             const postElement = document.createElement("div");
             postElement.classList.add("post");
@@ -20,25 +23,28 @@ function loadPosts() {
                 <p>${post.content}</p>
                 <small>${new Date(post.created_at).toLocaleString()}</small>
                 <div class="like-dislike">
-                    <button class="like" onclick="updateLikes(${post.id}, 'like')">👍 ${post.likes}</button>
-                    <button class="dislike" onclick="updateLikes(${post.id}, 'dislike')">👎 ${post.dislikes}</button>
+                    <button class="like" onclick="updateLikes(${post.id}, 'like')">👍 ${post.likes || 0}</button>
+                    <button class="dislike" onclick="updateLikes(${post.id}, 'dislike')">👎 ${post.dislikes || 0}</button>
                 </div>
             `;
             container.appendChild(postElement);
         });
-    });
+    })
+    .catch(error => console.error("Errore nel caricamento dei post:", error));
 }
 
 function updateLikes(postId, type) {
-    let column = type === 'like' ? 'likes' : 'dislikes';
+    let column = type === "like" ? "likes" : "dislikes";
 
-    fetch(`https://amxtzqdawysnqpjnsgic.supabase.co/rest/v1/posts?id=eq.${postId}`, {
-        method: 'PATCH',
+    fetch(`${SUPABASE_URL}/rest/v1/posts?id=eq.${postId}`, {
+        method: "PATCH",
         headers: {
-            'apikey': 'TU_API_KEY',
-            'Authorization': 'Bearer TU_API_KEY',
-            'Content-Type': 'application/json'
+            "apikey": SUPABASE_API_KEY,
+            "Authorization": `Bearer ${SUPABASE_API_KEY}`,
+            "Content-Type": "application/json"
         },
-        body: JSON.stringify({ [column]: column + 1 })
-    }).then(() => loadPosts());
+        body: JSON.stringify({ [column]: { "increment": 1 } })
+    })
+    .then(() => loadPosts())
+    .catch(error => console.error("Errore nell'aggiornamento del like/dislike:", error));
 }
