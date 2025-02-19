@@ -7,24 +7,24 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="admin-container">
-        <div class="admin-header">
-            <h1>🚀 Area Admin</h1>
-            <button class="exit-btn" onclick="window.location.href='index.html'">🔙 Esci</button>
-        </div>
-        <p>Gestisci e pubblica nuovi post sulla bacheca.</p>
+    <header>
+        <h1>⚙️ Admin Panel</h1>
+        <button class="back-button" onclick="window.location.href='index.html'">🏠 Torna alla Home</button>
+    </header>
 
-        <div class="post-box">
-            <h2>📝 Crea un nuovo post</h2>
-            <input type="text" id="postTitle" placeholder="Titolo del post">
-            <textarea id="postContent" placeholder="Scrivi qui il contenuto..."></textarea>
-            <button class="publish-btn" onclick="submitPost()">📢 Pubblica</button>
+    <main>
+        <div class="post-form">
+            <input type="text" id="post-title" placeholder="Titolo del post">
+            <textarea id="post-content" placeholder="Scrivi il contenuto..."></textarea>
+            <button onclick="publishPost()">Pubblica</button>
         </div>
 
-        <h2>🗂️ Post pubblicati</h2>
-        <div id="postList"></div>
-    </div>
+        <h2>📋 I tuoi post</h2>
+        <div id="admin-posts-container">
+            <!-- I post verranno caricati qui -->
+        </div>
+    </main>
 
-    <script src="script.js"></script>
+    <script src="admin.js"></script>
 </body>
 </html>
