@@ -9,11 +9,11 @@
 <body>
     <h1>Benvenuto su ShipUp</h1>
     
-    <button class="admin-btn" onclick="showLogin()">🔑 Accedi all'area admin</button>
+    <button onclick="showLogin()">Accedi all'area admin</button>
 
-    <div id="loginModal" class="login-modal">
-        <input type="password" id="passwordInput" class="password-input" placeholder="Inserisci la password">
-        <button class="login-btn" id="loginButton">Login</button>
+    <div id="loginModal" style="display: none;">
+        <input type="password" id="passwordInput" placeholder="Inserisci la password">
+        <button id="loginButton">Login</button>
     </div>
 
     <script src="script.js"></script>
