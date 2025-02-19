@@ -1,154 +1,96 @@
 body {
-    font-family: "Arial", sans-serif;
-    background-color: #f0f2f5;
+    font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    display: flex;
-    justify-content: center;
+    background-color: #f4f4f4;
+    color: #333;
 }
 
 .container {
     width: 90%;
     max-width: 800px;
-    background: white;
+    margin: auto;
     padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    margin-top: 20px;
 }
 
 header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
-}
-
-h1 {
-    color: #007bff;
-    font-size: 26px;
-}
-
-h2 {
-    color: #333;
-    font-size: 20px;
-    margin-bottom: 10px;
+    background: #0077cc;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
 }
 
 .admin-btn {
-    background-color: #007bff;
-    color: white;
+    background: white;
+    color: #0077cc;
     border: none;
-    padding: 10px 15px;
+    padding: 8px 12px;
+    border-radius: 5px;
     cursor: pointer;
-    border-radius: 6px;
-    font-size: 16px;
 }
 
 .admin-btn:hover {
-    background-color: #0056b3;
+    background: #ddd;
 }
 
-#postList {
-    margin-top: 20px;
+h1, h2 {
+    text-align: center;
 }
 
-.post-card {
+.post {
     background: white;
     padding: 15px;
-    margin: 12px 0;
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    border-left: 6px solid #007bff;
-    transition: transform 0.2s;
+    margin: 10px 0;
+    border-radius: 8px;
+    box-shadow: 0 0 5px rgba(0,0,0,0.1);
 }
 
-.post-card:hover {
-    transform: scale(1.02);
+.post h3 {
+    margin: 0;
+    color: #0077cc;
 }
 
-.post-title {
-    font-weight: bold;
-    font-size: 22px;
-    color: #007bff;
-    margin-bottom: 5px;
+.post p {
+    margin: 10px 0;
 }
 
-.post-content {
-    font-size: 16px;
-    color: #333;
-    margin-top: 8px;
-}
-
-.post-date {
-    font-size: 14px;
-    color: #666;
-    margin-top: 10px;
-}
-
-.reaction-buttons {
-    margin-top: 15px;
+.post .actions {
     display: flex;
-    gap: 10px;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .like-btn, .dislike-btn {
     background: none;
     border: none;
-    font-size: 18px;
+    font-size: 16px;
     cursor: pointer;
-    padding: 6px 10px;
-    border-radius: 5px;
-    font-weight: bold;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
-
-.like-btn {
-    color: #28a745;
 }
 
 .like-btn:hover {
-    background-color: #e6f4ea;
-}
-
-.dislike-btn {
-    color: #dc3545;
+    color: green;
 }
 
 .dislike-btn:hover {
-    background-color: #f8d7da;
-}
-
-.admin-actions {
-    margin-top: 10px;
-    display: flex;
-    gap: 10px;
+    color: red;
 }
 
 .edit-btn, .delete-btn {
+    background: #ff6347;
+    color: white;
     border: none;
-    padding: 6px 10px;
+    padding: 5px 10px;
+    border-radius: 5px;
     cursor: pointer;
-    border-radius: 6px;
-    font-size: 14px;
 }
 
 .edit-btn {
-    background-color: #ffc107;
-    color: white;
-}
-
-.edit-btn:hover {
-    background-color: #e0a800;
-}
-
-.delete-btn {
-    background-color: #dc3545;
-    color: white;
+    background: #0077cc;
 }
 
 .delete-btn:hover {
-    background-color: #c82333;
+    background: darkred;
 }
