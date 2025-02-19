@@ -1,64 +1,73 @@
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f9;
+    font-family: "Arial", sans-serif;
+    background-color: #f8f9fa;
     margin: 0;
     padding: 0;
     display: flex;
     justify-content: center;
     align-items: center;
+    height: 100vh;
 }
 
 .admin-container {
-    width: 60%;
+    width: 80%;
+    max-width: 800px;
     background: white;
     padding: 20px;
-    margin-top: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     text-align: center;
+}
+
+.admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 h1, h2 {
     color: #333;
+    margin-bottom: 10px;
 }
 
 p {
-    color: #666;
+    color: #555;
 }
 
 button {
     border: none;
     padding: 10px 15px;
     cursor: pointer;
-    border-radius: 5px;
+    border-radius: 6px;
     font-size: 16px;
     transition: 0.3s;
 }
 
-.home-btn {
-    background-color: #007bff;
+.exit-btn {
+    background-color: #ff4d4d;
     color: white;
 }
 
-.home-btn:hover {
-    background-color: #0056b3;
+.exit-btn:hover {
+    background-color: #cc0000;
 }
 
 .post-box {
     background: #fff;
     padding: 20px;
     margin-top: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 input, textarea {
     width: 100%;
-    padding: 10px;
-    margin: 10px 0;
+    padding: 12px;
+    margin: 8px 0;
     font-size: 16px;
-    border-radius: 5px;
+    border-radius: 6px;
     border: 1px solid #ddd;
+    box-sizing: border-box;
 }
 
 textarea {
@@ -67,12 +76,12 @@ textarea {
 }
 
 .publish-btn {
-    background-color: #28a745;
+    background-color: #007bff;
     color: white;
 }
 
 .publish-btn:hover {
-    background-color: #218838;
+    background-color: #0056b3;
 }
 
 #postList {
@@ -81,15 +90,17 @@ textarea {
 }
 
 .post-card {
-    background: #fff;
+    background: #ffffff;
     padding: 15px;
-    margin: 10px 0;
-    border-radius: 8px;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    margin: 12px 0;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    border-left: 5px solid #007bff;
 }
 
 .post-title {
     font-weight: bold;
+    font-size: 18px;
     color: #333;
 }
 
