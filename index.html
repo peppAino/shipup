@@ -7,22 +7,13 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <header>
-        <h1>📢 ShipUp - Bacheca</h1>
-        <button class="admin-button" onclick="showLogin()">🔑 Admin</button>
-    </header>
+    <h1>Benvenuto su ShipUp</h1>
+    
+    <button class="admin-btn" onclick="showLogin()">🔑 Accedi all'area admin</button>
 
-    <main>
-        <div id="posts-container">
-            <!-- Qui verranno caricati i post dinamicamente -->
-        </div>
-    </main>
-
-    <div id="loginModal" class="modal" style="display: none;">
-        <div class="modal-content">
-            <input type="password" id="passwordInput" placeholder="Inserisci la password">
-            <button id="loginButton">Login</button>
-        </div>
+    <div id="loginModal" class="login-modal">
+        <input type="password" id="passwordInput" class="password-input" placeholder="Inserisci la password">
+        <button class="login-btn" id="loginButton">Login</button>
     </div>
 
     <script src="script.js"></script>
