@@ -3,22 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ShipUp - Admin</title>
+    <title>ShipUp - Home</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>Area Admin</h1>
-    <p>Qui puoi gestire i post.</p>
+    <div class="container">
+        <header>
+            <h1>📢 ShipUp - Bacheca</h1>
+            <button class="admin-btn" onclick="window.location.href='admin.html'">🔑 Area Admin</button>
+        </header>
 
-    <button onclick="window.location.href='index.html'">🏠 Torna alla home</button>
-
-    <h2>Aggiungi un nuovo post</h2>
-    <input type="text" id="postTitle" placeholder="Titolo del post">
-    <textarea id="postContent" placeholder="Scrivi il contenuto..."></textarea>
-    <button onclick="submitPost()">📢 Pubblica</button>
-
-    <h2>Post esistenti</h2>
-    <ul id="postList"></ul>
+        <h2>📋 Post recenti</h2>
+        <div id="postList"></div>
+    </div>
 
     <script src="script.js"></script>
 </body>
