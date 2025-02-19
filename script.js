@@ -1,5 +1,5 @@
 const SUPABASE_URL = "https://amxtzqdawysnqpjnsgic.supabase.co";
-const SUPABASE_API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFteHR6cWRhd3lzbnFwam5zZ2ljIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzk5MzA2NTgsImV4cCI6MjA1NTUwNjY1OH0.HNaCFBQ-BsJB4djiskK02r84Wwik-XJf5EPw2gq7ghY";
+const SUPABASE_API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."; // Inserisci la tua API Key
 
 async function loadPosts() {
     try {
@@ -31,6 +31,10 @@ async function loadPosts() {
                         <button class="like-btn" onclick="updateLikes(${post.id}, 'like')">👍 <span id="like-count-${post.id}">${post.likes || 0}</span></button>
                         <button class="dislike-btn" onclick="updateLikes(${post.id}, 'dislike')">👎 <span id="dislike-count-${post.id}">${post.dislikes || 0}</span></button>
                     </div>
+                    <div class="admin-actions">
+                        <button class="edit-btn" onclick="editPost(${post.id})">✏️ Modifica</button>
+                        <button class="delete-btn" onclick="deletePost(${post.id})">🗑️ Elimina</button>
+                    </div>
                 `;
 
                 postList.appendChild(postCard);
@@ -47,7 +51,7 @@ async function updateLikes(postId, type) {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json",
-                "apikey": SUPABASE_API_KEY,
+                "apikey": SUPABASE_API_KEY",
                 "Authorization": `Bearer ${SUPABASE_API_KEY}`
             },
             body: JSON.stringify({
@@ -60,8 +64,16 @@ async function updateLikes(postId, type) {
             countElement.textContent = parseInt(countElement.textContent) + 1;
         }
     } catch (error) {
-        console.error("Errore nell'aggiornamento del like/dislike:", error);
+        console.error("Errore aggiornamento like/dislike:", error);
     }
+}
+
+async function deletePost(postId) {
+    await fetch(`${SUPABASE_URL}/rest/v1/posts?id=eq.${postId}`, {
+        method: "DELETE",
+        headers: { "apikey": SUPABASE_API_KEY, "Authorization": `Bearer ${SUPABASE_API_KEY}` }
+    });
+    loadPosts();
 }
 
 document.addEventListener("DOMContentLoaded", loadPosts);
