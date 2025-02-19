@@ -3,20 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ShipUp - Home</title>
+    <title>Admin - ShipUp</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>📢 ShipUp - Bacheca</h1>
-            <button class="admin-btn" onclick="window.location.href='admin.html'">🔑 Area Admin</button>
-        </header>
+    <h1>🛠 Admin - Gestisci i Post</h1>
 
-        <h2>📋 Post recenti</h2>
-        <div id="postList"></div>
+    <div class="admin-container">
+        <h2>📝 Crea un nuovo post</h2>
+        <input type="text" id="postTitle" placeholder="Titolo del post">
+        <textarea id="postContent" placeholder="Scrivi il contenuto..."></textarea>
+        <button onclick="publishPost()">📢 Pubblica</button>
     </div>
 
-    <script src="script.js"></script>
+    <h2>📌 Post pubblicati</h2>
+    <div id="adminPostList"></div>
+
+    <a href="index.html">🏠 Torna alla home</a>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+    <script src="admin.js"></script>
 </body>
 </html>
