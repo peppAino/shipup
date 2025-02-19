@@ -10,37 +10,40 @@ header {
     color: white;
     padding: 15px;
     text-align: center;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 h1 {
     margin: 0;
 }
 
-.admin-button, .back-button {
+.admin-button {
     background-color: #28a745;
     color: white;
     border: none;
     padding: 10px;
     cursor: pointer;
-    margin-top: 10px;
+    border-radius: 5px;
 }
 
-.admin-button:hover, .back-button:hover {
+.admin-button:hover {
     background-color: #218838;
 }
 
 main {
-    max-width: 600px;
+    max-width: 800px;
     margin: auto;
     padding: 20px;
 }
 
 .post {
     background: white;
-    padding: 15px;
+    padding: 20px;
     margin: 10px 0;
-    border-radius: 5px;
-    box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
 }
 
 .post h2 {
@@ -50,6 +53,7 @@ main {
 
 .post p {
     color: #666;
+    margin-top: 5px;
 }
 
 .like-dislike {
@@ -58,10 +62,12 @@ main {
     margin-top: 10px;
 }
 
-.like-dislike button {
+.like, .dislike {
     border: none;
-    padding: 8px;
+    padding: 10px;
     cursor: pointer;
+    border-radius: 5px;
+    font-size: 16px;
 }
 
 .like {
@@ -69,7 +75,15 @@ main {
     color: white;
 }
 
+.like:hover {
+    background-color: #218838;
+}
+
 .dislike {
     background-color: #dc3545;
     color: white;
+}
+
+.dislike:hover {
+    background-color: #c82333;
 }
