@@ -23,7 +23,7 @@ header {
     border-radius: 8px;
 }
 
-.admin-btn {
+.logout-btn {
     background: white;
     color: #0077cc;
     border: none;
@@ -32,12 +32,34 @@ header {
     cursor: pointer;
 }
 
-.admin-btn:hover {
+.logout-btn:hover {
     background: #ddd;
 }
 
 h1, h2 {
     text-align: center;
+}
+
+input, textarea {
+    width: 100%;
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+.publish-btn {
+    width: 100%;
+    padding: 10px;
+    background: #28a745;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.publish-btn:hover {
+    background: #218838;
 }
 
 .post {
@@ -61,21 +83,6 @@ h1, h2 {
     display: flex;
     justify-content: space-between;
     align-items: center;
-}
-
-.like-btn, .dislike-btn {
-    background: none;
-    border: none;
-    font-size: 16px;
-    cursor: pointer;
-}
-
-.like-btn:hover {
-    color: green;
-}
-
-.dislike-btn:hover {
-    color: red;
 }
 
 .edit-btn, .delete-btn {
