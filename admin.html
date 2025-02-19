@@ -3,25 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ShipUp - Area Admin</title>
+    <title>ShipUp - Admin</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>🛠 ShipUp - Area Admin</h1>
-            <button class="logout-btn" onclick="logout()">🚪 Esci</button>
-        </header>
+    <div class="admin-container">
+        <div class="admin-header">
+            <h1>🚀 Area Admin</h1>
+            <button class="exit-btn" onclick="window.location.href='index.html'">🔙 Esci</button>
+        </div>
+        <p>Gestisci e pubblica nuovi post sulla bacheca.</p>
 
-        <h2>📝 Crea un nuovo post</h2>
-        <input type="text" id="postTitle" placeholder="Titolo del post">
-        <textarea id="postContent" placeholder="Scrivi il contenuto del post..."></textarea>
-        <button class="publish-btn" onclick="publishPost()">📢 Pubblica</button>
+        <div class="post-box">
+            <h2>📝 Crea un nuovo post</h2>
+            <input type="text" id="postTitle" placeholder="Titolo del post">
+            <textarea id="postContent" placeholder="Scrivi qui il contenuto..."></textarea>
+            <button class="publish-btn" onclick="submitPost()">📢 Pubblica</button>
+        </div>
 
-        <h2>📋 Post esistenti</h2>
-        <div id="adminPostList"></div>
+        <h2>🗂️ Post pubblicati</h2>
+        <div id="postList"></div>
     </div>
 
-    <script src="admin.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
