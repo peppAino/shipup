@@ -2,7 +2,7 @@ const supabaseUrl = "https://amxtzqdawysnqpjnsgic.supabase.co";
 const supabaseKey = "TUAPIKEY";
 const supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
-// PUBBLICA UN NUOVO POST
+// 📌 PUBBLICA UN NUOVO POST
 async function publishPost() {
     const title = document.getElementById("postTitle").value.trim();
     const content = document.getElementById("postContent").value.trim();
@@ -12,16 +12,12 @@ async function publishPost() {
         return;
     }
 
-    const { error } = await supabase.from("posts").insert([{ 
-        title, 
-        content, 
-        likes: 0, 
-        dislikes: 0, 
-        created_at: new Date().toISOString() 
-    }]);
+    const { error } = await supabase.from("posts").insert([
+        { title, content, likes: 0, dislikes: 0, created_at: new Date().toISOString() }
+    ]);
 
     if (error) {
-        alert("❌ Errore nella pubblicazione del post!");
+        alert("❌ Errore nella pubblicazione!");
         console.error(error);
     } else {
         document.getElementById("postTitle").value = "";
@@ -30,7 +26,7 @@ async function publishPost() {
     }
 }
 
-// RECUPERA I POST PER L'ADMIN
+// 📌 RECUPERA POST PER L'ADMIN
 async function fetchAdminPosts() {
     const { data, error } = await supabase
         .from("posts")
@@ -38,7 +34,7 @@ async function fetchAdminPosts() {
         .order("created_at", { ascending: false });
 
     if (error) {
-        console.error("Errore nel recupero dei post:", error);
+        console.error("Errore nel recupero:", error);
         return;
     }
 
@@ -53,7 +49,7 @@ async function fetchAdminPosts() {
             <p>${post.content}</p>
             <small>📅 ${new Date(post.created_at).toLocaleString()}</small>
             <div class="actions">
-                <button onclick="editPost(${post.id}, '${post.content}')">✏️ Modifica</button>
+                <button onclick="editPost(${post.id}, '${post.content.replace(/'/g, "\\'")}')">✏️ Modifica</button>
                 <button onclick="deletePost(${post.id})">🗑 Elimina</button>
             </div>
         `;
@@ -61,9 +57,9 @@ async function fetchAdminPosts() {
     });
 }
 
-// MODIFICA UN POST
+// 📌 MODIFICA POST
 async function editPost(postId, oldContent) {
-    const newContent = prompt("Modifica il contenuto del post:", oldContent);
+    const newContent = prompt("Modifica il contenuto:", oldContent);
     if (!newContent || newContent.trim() === oldContent) return;
 
     const { error } = await supabase
@@ -72,16 +68,16 @@ async function editPost(postId, oldContent) {
         .eq("id", postId);
 
     if (error) {
-        alert("❌ Errore nella modifica del post!");
+        alert("❌ Errore nella modifica!");
         console.error(error);
     } else {
         fetchAdminPosts();
     }
 }
 
-// ELIMINA UN POST
+// 📌 ELIMINA POST
 async function deletePost(postId) {
-    const confirmDelete = confirm("❗ Sei sicuro di voler eliminare questo post?");
+    const confirmDelete = confirm("❗ Eliminare il post?");
     if (!confirmDelete) return;
 
     const { error } = await supabase
@@ -90,12 +86,12 @@ async function deletePost(postId) {
         .eq("id", postId);
 
     if (error) {
-        alert("❌ Errore nell'eliminazione del post!");
+        alert("❌ Errore nell'eliminazione!");
         console.error(error);
     } else {
         fetchAdminPosts();
     }
 }
 
-// CARICA I POST QUANDO LA PAGINA VIENE APERTA
+// 📌 CARICA I POST ALL'AVVIO
 fetchAdminPosts();
