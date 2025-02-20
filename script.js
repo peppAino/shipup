@@ -1,4 +1,4 @@
-// ShipUp Blog - v1.2.0
+// ShipUp Blog - v1.2.3
 document.addEventListener('DOMContentLoaded', () => {
     if (typeof window.supabase === 'undefined') {
         console.error('Errore: la libreria Supabase non è caricata. Controlla il CDN nel file index.html.');
@@ -47,8 +47,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 .from('attachments')
                 .upload(fileName, attachment, { upsert: false });
             if (error) {
-                console.error('Errore caricamento allegato:', error);
-                alert(`Errore nel caricamento dell’allegato: ${error.message}`);
+                console.error('Errore caricamento allegato (RLS?):', error);
+                alert(`Errore nel caricamento dell’allegato: ${error.message}. Controlla le policy RLS su Supabase.`);
                 return;
             }
             const { data: urlData } = supabaseClient.storage
@@ -62,8 +62,8 @@ document.addEventListener('DOMContentLoaded', () => {
             .insert([{ title, description, attachment_url: attachmentUrl }])
             .select();
         if (error) {
-            console.error('Errore salvataggio post:', error);
-            alert(`Errore nel salvataggio del post: ${error.message}`);
+            console.error('Errore salvataggio post (RLS?):', error);
+            alert(`Errore nel salvataggio del post: ${error.message}. Controlla le policy RLS su Supabase per la tabella 'posts'. Verifica che esista la policy 'Allow anon inserts' con USING (true) e WITH CHECK (true).`);
             return;
         }
 
@@ -88,11 +88,14 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
         newsContainer.prepend(newsItem);
 
-        // Aggiungi evento al bottone "Ho letto"
         const readButton = newsItem.querySelector('.read-button');
-        readButton.addEventListener('click', () => confirmRead(post.id));
+        readButton.addEventListener('click', async () => {
+            if (readButton.classList.contains('disabled')) return;
+            readButton.classList.add('disabled');
+            await confirmRead(post.id);
+            readButton.textContent = 'Letto!';
+        });
 
-        // Aggiorna il conteggio delle visualizzazioni all’apertura
         updateViewCount(post.id);
     }
 
@@ -102,7 +105,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 .from('posts')
                 .select('*')
                 .order('created_at', { ascending: false });
-            if (error) throw error;
+            if (error) {
+                console.error('Errore caricamento post (RLS?):', error);
+                alert(`Errore nel caricamento delle news: ${error.message}. Controlla le policy RLS su Supabase per la tabella 'posts'. Verifica che esista la policy 'Allow anon reads' con USING (true).`);
+                return;
+            }
             data.forEach(displayPost);
         } catch (error) {
             console.error('Errore nel caricamento dei post:', error);
@@ -114,24 +121,35 @@ document.addEventListener('DOMContentLoaded', () => {
             .from('read_confirmations')
             .insert({ post_id: postId });
         if (error) {
-            console.error('Errore nella conferma di lettura:', error);
-            alert(`Errore nella conferma di lettura: ${error.message}`);
+            console.error('Errore nella conferma di lettura (RLS?):', error);
+            alert(`Errore nella conferma di lettura: ${error.message}. Controlla le policy RLS su Supabase per la tabella 'read_confirmations'.`);
             return;
         }
         alert('Grazie per aver confermato la lettura!');
     }
 
     async function updateViewCount(postId) {
-        // Incrementa il conteggio delle visualizzazioni
+        const lastView = localStorage.getItem(`view_${postId}`);
+        const now = Date.now();
+        if (lastView && (now - lastView) < 86400000) { // 24 ore
+            return;
+        }
+
         const { data: existingViews, error: fetchError } = await supabaseClient
             .from('post_views')
             .select('views')
             .eq('post_id', postId)
             .single();
         
-        if (fetchError && fetchError.code !== 'PGRST116') { // PGRST116 = record non trovato
-            console.error('Errore nel recupero delle visualizzazioni:', fetchError);
-            return;
+        if (fetchError) {
+            if (fetchError.code === '42P01') { // Tabella non esiste
+                console.error('Errore: la tabella "post_views" non esiste. Crea la tabella su Supabase con: CREATE TABLE public.post_views (post_id INTEGER PRIMARY KEY REFERENCES public.posts(id), views INTEGER DEFAULT 0);');
+                alert('La tabella delle visualizzazioni non esiste. Crea la tabella su Supabase e riprova.');
+                return;
+            } else if (fetchError.code !== 'PGRST116') { // PGRST116 = record non trovato
+                console.error('Errore nel recupero delle visualizzazioni (RLS?):', fetchError);
+                return;
+            }
         }
 
         let views = 0;
@@ -146,18 +164,12 @@ document.addEventListener('DOMContentLoaded', () => {
             .upsert({ post_id: postId, views }, { onConflict: 'post_id' });
         
         if (updateError) {
-            console.error('Errore nell’aggiornamento delle visualizzazioni:', updateError);
+            console.error('Errore nell’aggiornamento delle visualizzazioni (RLS?):', updateError);
+            alert(`Errore nell’aggiornamento delle visualizzazioni: ${updateError.message}. Controlla le policy RLS su Supabase per la tabella 'post_views'.`);
             return;
         }
 
         document.getElementById(`view-count-${postId}`).textContent = views;
+        localStorage.setItem(`view_${postId}`, now);
     }
-
-    // Incrementa le visualizzazioni quando una news viene visualizzata
-    newsContainer.addEventListener('DOMContentLoaded', () => {
-        document.querySelectorAll('.news-item').forEach(item => {
-            const postId = item.querySelector('.read-button').dataset.postId;
-            updateViewCount(postId);
-        });
-    });
 });
