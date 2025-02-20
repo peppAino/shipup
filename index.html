@@ -3,20 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ShipUp - Home</title>
+    <title>Blog Semplice</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <header>
-        <h1>📢 ShipUp - Bacheca</h1>
-        <button class="admin-button" onclick="window.location.href='admin.html'">🔑 Admin</button>
+        <h1>Il Mio Blog</h1>
+        <button id="adminBtn">Area Admin</button>
     </header>
 
-    <main>
-        <div id="posts-container">
-            <!-- I post verranno caricati dinamicamente -->
+    <!-- Sezione News -->
+    <div class="news-container" id="newsContainer"></div>
+
+    <!-- Modal Admin -->
+    <div id="adminModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Pubblica una News</h2>
+            <form id="newsForm">
+                <input type="text" id="title" placeholder="Titolo" required>
+                <textarea id="description" placeholder="Descrizione" required></textarea>
+                <input type="file" id="attachment" accept="image/*,.pdf,.xlsx,.xls">
+                <button type="submit">Pubblica</button>
+            </form>
         </div>
-    </main>
+    </div>
 
     <script src="script.js"></script>
 </body>
