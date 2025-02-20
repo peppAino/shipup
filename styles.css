@@ -1,4 +1,4 @@
-/* ShipUp Blog - v1.2.0 */
+/* ShipUp Blog - v1.2.8 */
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
@@ -69,24 +69,41 @@ header {
 
 .news-item p {
     color: #d9d9d9; /* Grigio chiaro per testo */
+    margin-bottom: 15px; /* Spazio sotto la descrizione */
 }
 
-.news-item img {
+.news-image {
     max-width: 100%;
-    border-radius: 5px;
-    margin-top: 10px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    height: auto;
+    border-radius: 8px;
+    margin: 15px 0; /* Margine sopra e sotto l’immagine */
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2); /* Ombra più marcata */
+    display: block; /* Centra l’immagine */
+    margin-left: auto;
+    margin-right: auto;
 }
 
-.news-item a {
-    color: #ff6b6b; /* Rosso adattato al design */
+.attachment-link {
+    color: #ff6b6b;
     text-decoration: none;
     font-weight: bold;
-    transition: color 0.3s;
+    display: inline-block;
+    padding: 8px 12px;
+    background-color: #4a5a6a;
+    border-radius: 5px;
+    transition: color 0.3s, background-color 0.3s;
 }
 
-.news-item a:hover {
-    color: #f5e050; /* Giallo al hover */
+.attachment-link:hover {
+    color: #f5e050;
+    background-color: #3c4c5f;
+}
+
+.news-item small {
+    display: block;
+    margin-top: 15px;
+    color: #d9d9d9;
+    font-size: 0.9rem;
 }
 
 .read-button {
@@ -102,6 +119,12 @@ header {
 
 .read-button:hover {
     background-color: #f5e050;
+}
+
+.read-button.disabled {
+    background-color: #4a5a6a;
+    cursor: not-allowed;
+    opacity: 0.7;
 }
 
 .view-count {
@@ -191,6 +214,12 @@ header {
         right: 15px;
         padding: 10px 20px;
     }
+    .news-image {
+        margin: 10px 0;
+    }
+    .attachment-link {
+        padding: 6px 10px;
+    }
 }
 
 @media (max-width: 480px) { /* Mobile */
@@ -207,6 +236,12 @@ header {
         top: 10px;
         right: 10px;
         padding: 8px 16px;
+    }
+    .news-image {
+        margin: 8px 0;
+    }
+    .attachment-link {
+        padding: 4px 8px;
     }
     .read-button {
         padding: 6px 12px;
