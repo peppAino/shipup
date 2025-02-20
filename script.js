@@ -1,3 +1,4 @@
+```javascript name=script.js
 // ShipUp Blog - v1.3.6
 document.addEventListener('DOMContentLoaded', () => {
     if (typeof window.supabase === 'undefined') {
@@ -6,7 +7,8 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
-    const supabaseClient = window.supabase.createClient('https://amxtzqdawysnqpjnsgic.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFteHR6cWRhd3lzbnFwam5zZ2ljIi[...]
+    const supabaseClient = window.supabase.createClient('https://amxtzqdawysnqpjnsgic.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFteHR6cWRhd3lzbnFwam5zZ2ljIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzk5MzA2NTgsImV4cCI6MjA1NTUwNjY1OH0.HNaCFBQ-BsJB4djiskK02r84Wwik-XJf5EPw2gq7ghY');
+
     const newsContainer = document.getElementById('newsContainer');
     const adminLoginBtn = document.getElementById('adminLoginBtn');
     const newPostBtn = document.getElementById('newPostBtn');
@@ -233,6 +235,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     async function loadPosts() {
+        console.log('Caricamento delle news...');
         try {
             const { data, error } = await supabaseClient
                 .from('posts')
@@ -248,6 +251,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
                 return;
             }
+            console.log('News caricate:', data);
             newsContainer.innerHTML = ''; // Pulisci il container prima di ricaricare
             data.forEach(displayPost);
         } catch (error) {
@@ -345,3 +349,4 @@ document.addEventListener('DOMContentLoaded', () => {
         loadPosts(); // Ricarica le news per aggiornare i bottoni
     }
 });
+```
