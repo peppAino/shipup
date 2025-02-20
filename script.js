@@ -6,8 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
-    const supabaseClient = window.supabase.createClient('https://amxtzqdawysnqpjnsgic.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFteHR6cWRhd3lzbnFwam5zZ2ljIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzk5MzA2NTgsImV4cCI6MjA1NTUwNjY1OH0.HNaCFBQ-BsJB4djiskK02r84Wwik-XJf5EPw2gq7ghY');
-
+    const supabaseClient = window.supabase.createClient('https://amxtzqdawysnqpjnsgic.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFteHR6cWRhd3lzbnFwam5zZ2ljIi[...]
     const newsContainer = document.getElementById('newsContainer');
     const adminLoginBtn = document.getElementById('adminLoginBtn');
     const newPostBtn = document.getElementById('newPostBtn');
@@ -66,7 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 .upload(fileName, attachment, { upsert: false });
             if (error) {
                 console.error('Errore caricamento allegato (RLS?):', error);
-                alert(`Errore nel caricamento dell’allegato: ${error.message}. Controlla le policy RLS su Supabase per il bucket 'attachments'. Verifica che esista la policy 'Allow anon uploads' con FOR INSERT, USING (true) e WITH CHECK (true).`);
+                alert(`Errore nel caricamento dell’allegato: ${error.message}. Controlla le policy RLS su Supabase per il bucket 'attachments'.`);
                 newsForm.reset(); // Resetta anche in caso di errore
                 return;
             }
@@ -82,7 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
             .select();
         if (error) {
             console.error('Errore salvataggio post (RLS?):', error);
-            alert(`Errore nel salvataggio del post: ${error.message}. Controlla le policy RLS su Supabase per la tabella 'posts'. Verifica che esista la policy 'Allow anon inserts' con USING (true) e WITH CHECK (true).`);
+            alert(`Errore nel salvataggio del post: ${error.message}. Controlla le policy RLS su Supabase per la tabella 'posts'.`);
             newsForm.reset(); // Resetta anche in caso di errore
             return;
         }
@@ -128,7 +127,7 @@ document.addEventListener('DOMContentLoaded', () => {
             .eq('id', postId);
         if (error) {
             console.error('Errore modifica post (RLS?):', error);
-            alert(`Errore nella modifica del post: ${error.message}. Controlla le policy RLS su Supabase per la tabella 'posts'. Verifica che esista la policy 'Allow admin updates' con USING (true) e WITH CHECK (true).`);
+            alert(`Errore nella modifica del post: ${error.message}. Controlla le policy RLS su Supabase per la tabella 'posts'.`);
             return;
         }
 
@@ -170,7 +169,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 : post.attachment_url ? `<p><a href="${post.attachment_url}" target="_blank" class="attachment-link">Scarica allegato (${getFileType(post.attachment_url)})</a></p>` : ''}
             <small>Pubblicato il: ${formattedCreated}</small>
             ${updatedText} <!-- Posizionato sotto "Pubblicato il..." -->
-            <button class="read-button" data-post-id="${post.id}">Ho letto</button>
+            <button class="like-button" data-post-id="${post.id}">Mi Piace</button>
+            <div class="like-count">Mi Piace: <span id="like-count-${post.id}">0</span></div>
             <div class="view-count">Visualizzazioni: <span id="view-count-${post.id}">0</span></div>
             ${isAdmin ? `
                 <button class="edit-button" data-post-id="${post.id}">Modifica</button>
@@ -179,12 +179,13 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
         newsContainer.prepend(newsItem);
 
-        const readButton = newsItem.querySelector('.read-button');
-        readButton.addEventListener('click', async () => {
-            if (readButton.classList.contains('disabled')) return;
-            readButton.classList.add('disabled');
-            await confirmRead(post.id);
-            readButton.textContent = 'Letto!';
+        const likeButton = newsItem.querySelector('.like-button');
+        likeButton.addEventListener('click', async () => {
+            if (likeButton.classList.contains('disabled')) return;
+            likeButton.classList.add('disabled');
+            await addLike(post.id);
+            const likeCountElem = document.getElementById(`like-count-${post.id}`);
+            likeCountElem.textContent = parseInt(likeCountElem.textContent) + 1;
         });
 
         if (isAdmin) {
@@ -207,11 +208,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (error) {
                         console.error('Errore cancellazione post (RLS o vincolo?):', error);
                         if (error.message.includes('foreign key constraint')) {
-                            alert(`Errore nella cancellazione del post: ${error.message}. Il vincolo di chiave esterna su 'read_confirmations' o 'post_views' blocca la cancellazione. Modifica i vincoli su Supabase con ON DELETE CASCADE (es. su 'read_confirmations' e 'post_views') o elimina i record correlati. Controlla anche le policy RLS su Supabase per la tabella 'posts'. Verifica che esista la policy 'Allow admin deletes' con USING (true) e WITH CHECK (true).`);
+                            alert(`Errore nella cancellazione del post: ${error.message}. Il vincolo di chiave esterna su 'read_confirmations' o 'post_views' blocca la cancellazione.`);
                         } else if (error.message.includes('42501')) { // Violazione RLS
-                            alert(`Errore nella cancellazione del post: violazione RLS. Controlla le policy RLS su Supabase per la tabella 'posts'. Verifica che esista la policy 'Allow admin deletes' con USING (true) e WITH CHECK (true).`);
+                            alert(`Errore nella cancellazione del post: violazione RLS. Controlla le policy RLS su Supabase per la tabella 'posts'.`);
                         } else {
-                            alert(`Errore nella cancellazione del post: ${error.message}. Controlla le policy RLS su Supabase per la tabella 'posts'. Verifica che esista la policy 'Allow admin deletes' con USING (true) e WITH CHECK (true).`);
+                            alert(`Errore nella cancellazione del post: ${error.message}. Controlla le policy RLS su Supabase per la tabella 'posts'.`);
                         }
                         return;
                     }
@@ -241,9 +242,9 @@ document.addEventListener('DOMContentLoaded', () => {
             if (error) {
                 console.error('Errore caricamento post (RLS o rete?):', error);
                 if (error.message.includes('NetworkError') || error.message.includes('fetch')) {
-                    alert(`Errore di rete nel caricamento delle news: ${error.message}. Verifica la connessione internet o le credenziali Supabase. Controlla anche le policy RLS su Supabase per la tabella 'posts'. Verifica che esista la policy 'Allow anon reads' con USING (true).`);
+                    alert(`Errore di rete nel caricamento delle news: ${error.message}. Verifica la connessione internet o le credenziali Supabase.`);
                 } else {
-                    alert(`Errore nel caricamento delle news: ${error.message}. Controlla le policy RLS su Supabase per la tabella 'posts'. Verifica che esista la policy 'Allow anon reads' con USING (true).`);
+                    alert(`Errore nel caricamento delle news: ${error.message}. Controlla le policy RLS su Supabase per la tabella 'posts'.`);
                 }
                 return;
             }
@@ -255,16 +256,33 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    async function confirmRead(postId) {
-        const { error } = await supabaseClient
-            .from('read_confirmations')
-            .insert({ post_id: postId });
-        if (error) {
-            console.error('Errore nella conferma di lettura (RLS?):', error);
-            alert(`Errore nella conferma di lettura: ${error.message}. Controlla le policy RLS su Supabase per la tabella 'read_confirmations'.`);
+    async function addLike(postId) {
+        const { data: existingLikes, error: fetchError } = await supabaseClient
+            .from('post_likes')
+            .select('likes')
+            .eq('post_id', postId)
+            .single();
+
+        if (fetchError) {
+            console.error('Errore nel recupero dei "Mi Piace":', fetchError);
             return;
         }
-        alert('Grazie per aver confermato la lettura!');
+
+        let likes = 0;
+        if (existingLikes) {
+            likes = existingLikes.likes || 0;
+        }
+
+        likes += 1;
+
+        const { error: updateError } = await supabaseClient
+            .from('post_likes')
+            .upsert({ post_id: postId, likes }, { onConflict: 'post_id' });
+
+        if (updateError) {
+            console.error('Errore nell’aggiornamento dei "Mi Piace":', updateError);
+            return;
+        }
     }
 
     async function updateViewCount(postId) {
@@ -282,11 +300,11 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if (fetchError) {
             if (fetchError.code === '42P01') { // Tabella non esiste
-                console.error('Errore: la tabella "post_views" non esiste. Crea la tabella su Supabase con: CREATE TABLE public.post_views (post_id INTEGER PRIMARY KEY REFERENCES public.posts(id), views INTEGER DEFAULT 0);');
+                console.error('Errore: la tabella "post_views" non esiste. Crea la tabella su Supabase con: CREATE TABLE public.post_views (post_id INTEGER PRIMARY KEY REFERENCES public.posts(id), vie[...]
                 alert('La tabella delle visualizzazioni non esiste. Crea la tabella su Supabase e riprova.');
                 return;
             } else if (fetchError.code === '42501') { // Violazione RLS
-                console.error('Errore: violazione RLS sulla tabella "post_views". Controlla le policy RLS su Supabase per la tabella "post_views". Verifica che esista la policy "Allow anon updates" con FOR INSERT, UPDATE, USING (true) e WITH CHECK (true).', fetchError);
+                console.error('Errore: violazione RLS sulla tabella "post_views". Controlla le policy RLS su Supabase per la tabella "post_views".');
                 alert(`Errore nell’aggiornamento delle visualizzazioni: violazione RLS. Controlla le policy su Supabase per 'post_views'.`);
                 return;
             } else if (fetchError.code !== 'PGRST116') { // PGRST116 = record non trovato
@@ -308,7 +326,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if (updateError) {
             console.error('Errore nell’aggiornamento delle visualizzazioni (RLS?):', updateError);
-            alert(`Errore nell’aggiornamento delle visualizzazioni: ${updateError.message}. Controlla le policy RLS su Supabase per la tabella 'post_views'. Verifica che esista la policy "Allow anon updates" con FOR INSERT, UPDATE, USING (true) e WITH CHECK (true).`);
+            alert(`Errore nell’aggiornamento delle visualizzazioni: ${updateError.message}. Controlla le policy RLS su Supabase per la tabella 'post_views'.`);
             return;
         }
 
