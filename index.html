@@ -1,4 +1,4 @@
-<!-- ShipUp Blog - v1.1 -->
+<!-- ShipUp Blog - v1.1.2 -->
 <!DOCTYPE html>
 <html lang="it">
 <head>
@@ -6,8 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ShipUp</title>
     <link rel="stylesheet" href="styles.css">
-    <!-- CDN di Supabase (se non usi npm) -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Carica Supabase prima di script.js -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 </head>
 <body>
     <header>
@@ -15,10 +15,8 @@
         <button id="adminBtn">Area Admin</button>
     </header>
 
-    <!-- Sezione News -->
     <div class="news-container" id="newsContainer"></div>
 
-    <!-- Modal Admin -->
     <div id="adminModal" class="modal">
         <div class="modal-content">
             <span class="close">×</span>
