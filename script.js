@@ -1,4 +1,4 @@
-// ShipUp Blog - v1.3.1
+// ShipUp Blog - v1.3.3
 document.addEventListener('DOMContentLoaded', () => {
     if (typeof window.supabase === 'undefined') {
         console.error('Errore: la libreria Supabase non è caricata. Controlla il CDN nel file index.html.');
@@ -12,13 +12,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const adminModal = document.getElementById('adminModal');
     const adminBtn = document.getElementById('adminBtn');
     const closeBtn = document.querySelector('.close');
+    const newsModal = document.getElementById('newsModal');
+    const newsClose = document.getElementById('newsClose');
     const newsForm = document.getElementById('newsForm');
     const editModal = document.getElementById('editModal');
     const editClose = document.getElementById('editClose');
     const editForm = document.getElementById('editForm');
+    const newPostBtn = document.getElementById('newPostBtn');
     const adminPassword = '12345'; // Password admin
 
-    if (!newsContainer || !adminModal || !adminBtn || !closeBtn || !newsForm || !editModal || !editClose || !editForm) {
+    if (!newsContainer || !adminModal || !adminBtn || !closeBtn || !newsModal || !newsClose || !newsForm || !editModal || !editClose || !editForm || !newPostBtn) {
         console.error('Uno o più elementi DOM non sono stati trovati.');
         return;
     }
@@ -39,8 +42,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     closeBtn.onclick = () => adminModal.style.display = 'none';
     window.onclick = (e) => { if (e.target === adminModal) adminModal.style.display = 'none'; };
+    newsClose.onclick = () => newsModal.style.display = 'none';
+    window.onclick = (e) => { if (e.target === newsModal) newsModal.style.display = 'none'; };
     editClose.onclick = () => editModal.style.display = 'none';
     window.onclick = (e) => { if (e.target === editModal) editModal.style.display = 'none'; };
+
+    newPostBtn.onclick = () => {
+        // Resetta i campi del form prima di aprire il modal
+        newsForm.reset();
+        newsModal.style.display = 'flex';
+    };
 
     newsForm.onsubmit = async (e) => {
         e.preventDefault();
@@ -77,8 +88,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const post = postData[0];
         displayPost(post);
-        newsForm.reset();
-        adminModal.style.display = 'none';
+        newsForm.reset(); // Resetta i campi anche dopo un successo
+        newsModal.style.display = 'none';
     };
 
     editForm.onsubmit = async (e) => {
@@ -156,7 +167,8 @@ document.addEventListener('DOMContentLoaded', () => {
             ${post.attachment_url && post.attachment_url.includes('image') 
                 ? `<img src="${post.attachment_url}" alt="${post.title}" class="news-image">`
                 : post.attachment_url ? `<p><a href="${post.attachment_url}" target="_blank" class="attachment-link">Scarica allegato (${getFileType(post.attachment_url)})</a></p>` : ''}
-            <small>Pubblicato il: ${formattedCreated}</small>${updatedText}
+            <small>Pubblicato il: ${formattedCreated}</small>
+            ${updatedText} <!-- Posizionato sotto "Pubblicato il..." -->
             <button class="read-button" data-post-id="${post.id}">Ho letto</button>
             <div class="view-count">Visualizzazioni: <span id="view-count-${post.id}">0</span></div>
             ${isAdmin ? `
@@ -194,7 +206,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (error) {
                         console.error('Errore cancellazione post (RLS o vincolo?):', error);
                         if (error.message.includes('foreign key constraint')) {
-                            alert(`Errore nella cancellazione del post: ${error.message}. Il vincolo di chiave esterna su 'read_confirmations' blocca la cancellazione. Modifica il vincolo su Supabase con ON DELETE CASCADE o elimina i record correlati in 'read_confirmations'. Controlla anche le policy RLS su Supabase per la tabella 'posts'. Verifica che esista la policy 'Allow admin deletes' con USING (true) e WITH CHECK (true).`);
+                            alert(`Errore nella cancellazione del post: ${error.message}. Il vincolo di chiave esterna su 'read_confirmations' o 'post_views' blocca la cancellazione. Modifica i vincoli su Supabase con ON DELETE CASCADE (es. su 'read_confirmations' e 'post_views') o elimina i record correlati. Controlla anche le policy RLS su Supabase per la tabella 'posts'. Verifica che esista la policy 'Allow admin deletes' con USING (true) e WITH CHECK (true).`);
                         } else {
                             alert(`Errore nella cancellazione del post: ${error.message}. Controlla le policy RLS su Supabase per la tabella 'posts'. Verifica che esista la policy 'Allow admin deletes' con USING (true) e WITH CHECK (true).`);
                         }
