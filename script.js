@@ -1,4 +1,4 @@
-// ShipUp Blog - v1.2.8
+// ShipUp Blog - v1.3.0
 document.addEventListener('DOMContentLoaded', () => {
     if (typeof window.supabase === 'undefined') {
         console.error('Errore: la libreria Supabase non è caricata. Controlla il CDN nel file index.html.');
@@ -6,25 +6,31 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
-    const supabaseClient = window.supabase.createClient('https://amxtzqdawysnqpjnsgic.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFteHR6cWRhd3lzbnFwam5zZ2ljIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzk5MzA2NTgsImV4cCI6MjA1NTUwNjY1OH0.HNaCFBQ-BsJB4djiskK02r84Wwik-XJf5EPw2gq7ghY');
+    const supabaseClient = window.supabase.createClient('https://tuo-progetto.supabase.co', 'tua-anon-key');
 
     const newsContainer = document.getElementById('newsContainer');
     const adminModal = document.getElementById('adminModal');
     const adminBtn = document.getElementById('adminBtn');
     const closeBtn = document.querySelector('.close');
     const newsForm = document.getElementById('newsForm');
+    const editModal = document.getElementById('editModal');
+    const editClose = document.getElementById('editClose');
+    const editForm = document.getElementById('editForm');
     const adminPassword = '12345'; // Password admin
 
-    if (!newsContainer || !adminModal || !adminBtn || !closeBtn || !newsForm) {
+    if (!newsContainer || !adminModal || !adminBtn || !closeBtn || !newsForm || !editModal || !editClose || !editForm) {
         console.error('Uno o più elementi DOM non sono stati trovati.');
         return;
     }
+
+    let isAdmin = false;
 
     loadPosts();
 
     adminBtn.onclick = () => {
         const password = prompt('Inserisci la password per accedere all\'area admin:');
         if (password === adminPassword) {
+            isAdmin = true;
             adminModal.style.display = 'flex';
         } else {
             alert('Password errata!');
@@ -33,6 +39,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     closeBtn.onclick = () => adminModal.style.display = 'none';
     window.onclick = (e) => { if (e.target === adminModal) adminModal.style.display = 'none'; };
+    editClose.onclick = () => editModal.style.display = 'none';
+    window.onclick = (e) => { if (e.target === editModal) editModal.style.display = 'none'; };
 
     newsForm.onsubmit = async (e) => {
         e.preventDefault();
@@ -73,16 +81,72 @@ document.addEventListener('DOMContentLoaded', () => {
         adminModal.style.display = 'none';
     };
 
+    editForm.onsubmit = async (e) => {
+        e.preventDefault();
+        const postId = document.getElementById('editPostId').value;
+        const title = document.getElementById('editTitle').value;
+        const description = document.getElementById('editDescription').value;
+        const attachment = document.getElementById('editAttachment').files[0];
+        let attachmentUrl = null;
+
+        if (attachment) {
+            const fileName = `${Date.now()}_${attachment.name}`;
+            const { data, error } = await supabaseClient.storage
+                .from('attachments')
+                .upload(fileName, attachment, { upsert: false });
+            if (error) {
+                console.error('Errore caricamento allegato per modifica (RLS?):', error);
+                alert(`Errore nel caricamento dell’allegato per modifica: ${error.message}. Controlla le policy RLS su Supabase per il bucket 'attachments'.`);
+                return;
+            }
+            const { data: urlData } = supabaseClient.storage
+                .from('attachments')
+                .getPublicUrl(fileName);
+            attachmentUrl = urlData.publicUrl;
+        }
+
+        const { error } = await supabaseClient
+            .from('posts')
+            .update({
+                title,
+                description,
+                attachment_url: attachmentUrl || null,
+                updated_at: new Date().toISOString()
+            })
+            .eq('id', postId);
+        if (error) {
+            console.error('Errore modifica post (RLS?):', error);
+            alert(`Errore nella modifica del post: ${error.message}. Controlla le policy RLS su Supabase per la tabella 'posts'. Verifica che esista la policy 'Allow admin updates' con USING (true) e WITH CHECK (true).`);
+            return;
+        }
+
+        loadPosts(); // Ricarica le news per aggiornare l’interfaccia
+        editModal.style.display = 'none';
+    };
+
     function displayPost(post) {
         // Formatta la data/ora nel formato "DD/MM/YYYY HH:MM"
-        const date = new Date(post.created_at);
-        const formattedDate = date.toLocaleString('it-IT', {
+        const createdDate = new Date(post.created_at);
+        const formattedCreated = createdDate.toLocaleString('it-IT', {
             day: '2-digit',
             month: '2-digit',
             year: 'numeric',
             hour: '2-digit',
             minute: '2-digit'
-        }).replace(',', ''); // Rimuove la virgola per un formato più pulito, es. "20/02/2025 14:30"
+        }).replace(',', ''); // Rimuove la virgola, es. "20/02/2025 14:30"
+
+        let updatedText = '';
+        if (post.updated_at) {
+            const updatedDate = new Date(post.updated_at);
+            const formattedUpdated = updatedDate.toLocaleString('it-IT', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            }).replace(',', ''); // Rimuove la virgola, es. "20/02/2025 14:30"
+            updatedText = `<br><small>Ultima modifica: ${formattedUpdated}</small>`;
+        }
 
         const newsItem = document.createElement('div');
         newsItem.className = 'news-item';
@@ -92,9 +156,13 @@ document.addEventListener('DOMContentLoaded', () => {
             ${post.attachment_url && post.attachment_url.includes('image') 
                 ? `<img src="${post.attachment_url}" alt="${post.title}" class="news-image">`
                 : post.attachment_url ? `<p><a href="${post.attachment_url}" target="_blank" class="attachment-link">Scarica allegato (${getFileType(post.attachment_url)})</a></p>` : ''}
-            <small>Pubblicato il: ${formattedDate}</small>
+            <small>Pubblicato il: ${formattedCreated}</small>${updatedText}
             <button class="read-button" data-post-id="${post.id}">Ho letto</button>
             <div class="view-count">Visualizzazioni: <span id="view-count-${post.id}">0</span></div>
+            ${isAdmin ? `
+                <button class="edit-button" data-post-id="${post.id}">Modifica</button>
+                <button class="delete-button" data-post-id="${post.id}">Cancella</button>
+            ` : ''}
         `;
         newsContainer.prepend(newsItem);
 
@@ -105,6 +173,33 @@ document.addEventListener('DOMContentLoaded', () => {
             await confirmRead(post.id);
             readButton.textContent = 'Letto!';
         });
+
+        if (isAdmin) {
+            const editButton = newsItem.querySelector('.edit-button');
+            const deleteButton = newsItem.querySelector('.delete-button');
+
+            editButton.addEventListener('click', () => {
+                document.getElementById('editPostId').value = post.id;
+                document.getElementById('editTitle').value = post.title;
+                document.getElementById('editDescription').value = post.description;
+                editModal.style.display = 'flex';
+            });
+
+            deleteButton.addEventListener('click', async () => {
+                if (confirm('Sei sicuro di voler cancellare questa news?')) {
+                    const { error } = await supabaseClient
+                        .from('posts')
+                        .delete()
+                        .eq('id', post.id);
+                    if (error) {
+                        console.error('Errore cancellazione post (RLS?):', error);
+                        alert(`Errore nella cancellazione del post: ${error.message}. Controlla le policy RLS su Supabase per la tabella 'posts'. Verifica che esista la policy 'Allow admin deletes' con USING (true) e WITH CHECK (true).`);
+                        return;
+                    }
+                    newsItem.remove();
+                }
+            });
+        }
 
         updateViewCount(post.id);
     }
@@ -124,13 +219,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 .select('*')
                 .order('created_at', { ascending: false });
             if (error) {
-                console.error('Errore caricamento post (RLS?):', error);
-                alert(`Errore nel caricamento delle news: ${error.message}. Controlla le policy RLS su Supabase per la tabella 'posts'. Verifica che esista la policy 'Allow anon reads' con USING (true).`);
+                console.error('Errore caricamento post (RLS o rete?):', error);
+                if (error.message.includes('NetworkError') || error.message.includes('fetch')) {
+                    alert(`Errore di rete nel caricamento delle news: ${error.message}. Verifica la connessione internet o le credenziali Supabase. Controlla anche le policy RLS su Supabase per la tabella 'posts'. Verifica che esista la policy 'Allow anon reads' con USING (true).`);
+                } else {
+                    alert(`Errore nel caricamento delle news: ${error.message}. Controlla le policy RLS su Supabase per la tabella 'posts'. Verifica che esista la policy 'Allow anon reads' con USING (true).`);
+                }
                 return;
             }
+            newsContainer.innerHTML = ''; // Pulisci il container prima di ricaricare
             data.forEach(displayPost);
         } catch (error) {
             console.error('Errore nel caricamento dei post:', error);
+            alert(`Errore imprevisto nel caricamento delle news: ${error.message}. Controlla la connessione o le policy RLS su Supabase.`);
         }
     }
 
