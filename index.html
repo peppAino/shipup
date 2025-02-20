@@ -1,4 +1,4 @@
-<!-- ShipUp Blog - v1.2.4 -->
+<!-- ShipUp Blog - v1.3.0 -->
 <!DOCTYPE html>
 <html lang="it">
 <head>
@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ShipUp</title>
     <link rel="stylesheet" href="styles.css">
-    <link rel="icon" type="image/x-icon" href="favicon.ico"> <!-- O usa type="image/png" href="favicon.png" se PNG -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico"> <!-- O usa favicon.png -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 </head>
 <body>
@@ -26,6 +26,21 @@
                 <textarea id="description" placeholder="Descrizione" required></textarea>
                 <input type="file" id="attachment" accept="image/*,.pdf,.xlsx,.xls">
                 <button type="submit">Pubblica</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal per modificare una news -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="editClose">×</span>
+            <h2>Modifica News</h2>
+            <form id="editForm">
+                <input type="text" id="editTitle" placeholder="Titolo" required>
+                <textarea id="editDescription" placeholder="Descrizione" required></textarea>
+                <input type="file" id="editAttachment" accept="image/*,.pdf,.xlsx,.xls">
+                <button type="submit">Salva Modifiche</button>
+                <input type="hidden" id="editPostId">
             </form>
         </div>
     </div>
