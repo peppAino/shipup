@@ -89,6 +89,186 @@ header {
     font-weight: bold;
     display: inline-block;
     padding: 8px 12px;
-    background-color: #4a5...
+    background-color: #4a5a6a;
+    border-radius: 5px;
+    transition: color 0.3s, background-color 0.3s;
+}
 
-Qualcosa è andato storto. Riprova.
+.attachment-link:hover {
+    color: #f5e050;
+    background-color: #3c4c5f;
+}
+
+.news-item small {
+    display: block;
+    margin-top: 15px;
+    color: #d9d9d9;
+    font-size: 0.9rem;
+}
+
+.edit-button, .delete-button {
+    padding: 6px 12px;
+    margin-right: 5px;
+    background-color: #4a5a6a;
+    border: none;
+    border-radius: 5px;
+    color: #ffffff;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 10px;
+    display: inline-block;
+}
+
+.edit-button:hover, .delete-button:hover {
+    background-color: #f5e050;
+}
+
+.delete-button {
+    background-color: #ff6b6b;
+}
+
+.delete-button:hover {
+    background-color: #e55a5a;
+}
+
+.read-button {
+    padding: 8px 16px;
+    background-color: #4a5a6a;
+    border: none;
+    border-radius: 5px;
+    color: #ffffff;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 10px;
+}
+
+.read-button:hover {
+    background-color: #f5e050;
+}
+
+.read-button.disabled {
+    background-color: #4a5a6a;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.view-count {
+    font-size: 0.9rem;
+    color: #d9d9d9;
+    margin-top: 5px;
+}
+
+/* Modal Admin */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.7);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background: #2d3a4b;
+    padding: 20px;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    color: #ffffff;
+}
+
+.close {
+    float: right;
+    font-size: 24px;
+    cursor: pointer;
+    color: #d9d9d9;
+    transition: color 0.3s;
+}
+
+.close:hover {
+    color: #f5e050;
+}
+
+#newsForm, #editForm {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+#newsForm input, #newsForm textarea, #editForm input, #editForm textarea {
+    padding: 10px;
+    border: 1px solid #4a5a6a;
+    border-radius: 5px;
+    font-size: 1rem;
+    background-color: #1e2a38;
+    color: #ffffff;
+}
+
+#newsForm textarea, #editForm textarea {
+    height: 100px;
+    resize: vertical;
+}
+
+#newsForm button, #editForm button {
+    padding: 12px;
+    background-color: #ff6b6b;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+#newsForm button:hover, #editForm button:hover {
+    background-color: #f5e050;
+    transform: translateY(-2px);
+}
+
+/* Responsive */
+@media (max-width: 768px) { /* Tablet */
+    .banner {
+        max-height: 160px;
+    }
+    #adminBtn {
+        top: 15px;
+        right: 15px;
+        padding: 10px 20px;
+    }
+    .news-image {
+        margin: 10px 0;
+    }
+    .attachment-link, .edit-button, .delete-button {
+        padding: 6px 10px;
+    }
+}
+
+@media (max-width: 480px) { /* Mobile */
+    .banner {
+        max-height: 120px;
+    }
+    header {
+        padding: 0;
+    }
+    .news-container {
+        padding: 0 10px;
+    }
+    #adminBtn {
+        top: 10px;
+        right: 10px;
+        padding: 8px 16px;
+    }
+    .news-image {
+        margin: 8px 0;
+    }
+    .attachment-link, .edit-button, .delete-button {
+        padding: 4px 8px;
+    }
+    .read-button {
+        padding: 6px 12px;
+    }
+}
