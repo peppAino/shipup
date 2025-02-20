@@ -1,4 +1,4 @@
-<!-- ShipUp Blog - v1.3.3 -->
+<!-- ShipUp Blog - v1.3.4 -->
 <!DOCTYPE html>
 <html lang="it">
 <head>
@@ -12,18 +12,13 @@
 <body>
     <header>
         <img src="banner-shipup.png" alt="ShipUp Banner" class="banner">
-        <button id="adminBtn">Area Admin</button>
+        <div class="admin-buttons">
+            <button id="adminLoginBtn">Area Admin</button>
+            <button id="newPostBtn" style="display: none;">Pubblica Nuova News</button>
+        </div>
     </header>
 
     <div class="news-container" id="newsContainer"></div>
-
-    <div id="adminModal" class="modal">
-        <div class="modal-content">
-            <span class="close">×</span>
-            <h2>Opzioni Admin</h2>
-            <button id="newPostBtn">Pubblica Nuova News</button>
-        </div>
-    </div>
 
     <!-- Modal per inserire una nuova news -->
     <div id="newsModal" class="modal">
