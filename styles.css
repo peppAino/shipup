@@ -29,7 +29,7 @@ header {
     gap: 10px;
 }
 
-#adminLoginBtn, #newPostBtn {
+#adminLoginBtn, #newPostBtn, #logoutBtn {
     padding: 12px 24px;
     background-color: #4a5a6a; /* Grigio medio */
     border: none;
@@ -41,7 +41,7 @@ header {
     box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
-#adminLoginBtn:hover, #newPostBtn:hover {
+#adminLoginBtn:hover, #newPostBtn:hover, #logoutBtn:hover {
     background-color: #f5e050; /* Giallo pallido */
     transform: translateY(-2px);
 }
@@ -243,7 +243,7 @@ header {
         top: 15px;
         right: 15px;
     }
-    #adminLoginBtn, #newPostBtn {
+    #adminLoginBtn, #newPostBtn, #logoutBtn {
         padding: 10px 20px;
     }
     .news-image {
@@ -268,7 +268,7 @@ header {
         top: 10px;
         right: 10px;
     }
-    #adminLoginBtn, #newPostBtn {
+    #adminLoginBtn, #newPostBtn, #logoutBtn {
         padding: 8px 16px;
     }
     .news-image {
