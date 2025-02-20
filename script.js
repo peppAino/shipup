@@ -4,12 +4,22 @@ document.addEventListener('DOMContentLoaded', () => {
     const adminBtn = document.getElementById('adminBtn');
     const closeBtn = document.querySelector('.close');
     const newsForm = document.getElementById('newsForm');
+    const adminPassword = '12345'; // Password per l'admin
 
     // Carica news salvate
     loadNews();
 
-    // Apri/chiudi modal admin
-    adminBtn.onclick = () => adminModal.style.display = 'flex';
+    // Apri modal admin con controllo password
+    adminBtn.onclick = () => {
+        const password = prompt('Inserisci la password per accedere all\'area admin:');
+        if (password === adminPassword) {
+            adminModal.style.display = 'flex';
+        } else {
+            alert('Password errata!');
+        }
+    };
+
+    // Chiudi modal
     closeBtn.onclick = () => adminModal.style.display = 'none';
     window.onclick = (e) => { if (e.target == adminModal) adminModal.style.display = 'none'; };
 
