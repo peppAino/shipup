@@ -1,3 +1,4 @@
+/* ShipUp Blog - v1.1.5 */
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
@@ -7,15 +8,16 @@ body {
 
 header {
     background: linear-gradient(90deg, #ff6b6b, #4ecdc4);
-    color: white;
     text-align: center;
-    padding: 2rem;
+    padding: 0; /* Rimuoviamo padding per lasciare spazio solo al banner */
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    position: relative; /* Per posizionare il bottone admin */
 }
 
-header h1 {
-    margin: 0;
-    font-size: 2.5rem;
+.banner {
+    width: 100%;
+    max-height: 200px; /* Adatta l’altezza in base al tuo banner */
+    object-fit: cover; /* Mantieni proporzioni */
 }
 
 #adminBtn {
@@ -138,6 +140,9 @@ header h1 {
 
 /* Responsive */
 @media (max-width: 600px) {
+    .banner {
+        max-height: 150px; /* Altezza ridotta su mobile */
+    }
     header h1 {
         font-size: 1.8rem;
     }
