@@ -1,50 +1,76 @@
-const SUPABASE_URL = "https://amxtzqdawysnqpjnsgic.supabase.co";
-const SUPABASE_API_KEY = "TU_API_KEY";
+document.addEventListener('DOMContentLoaded', () => {
+    const newsContainer = document.getElementById('newsContainer');
+    const adminModal = document.getElementById('adminModal');
+    const adminBtn = document.getElementById('adminBtn');
+    const closeBtn = document.querySelector('.close');
+    const newsForm = document.getElementById('newsForm');
 
-document.addEventListener("DOMContentLoaded", loadPosts);
+    // Carica news salvate
+    loadNews();
 
-function loadPosts() {
-    fetch(`${SUPABASE_URL}/rest/v1/posts?select=*`, {
-        headers: {
-            "apikey": SUPABASE_API_KEY,
-            "Authorization": `Bearer ${SUPABASE_API_KEY}`
+    // Apri/chiudi modal admin
+    adminBtn.onclick = () => adminModal.style.display = 'flex';
+    closeBtn.onclick = () => adminModal.style.display = 'none';
+    window.onclick = (e) => { if (e.target == adminModal) adminModal.style.display = 'none'; };
+
+    // Gestione del form
+    newsForm.onsubmit = (e) => {
+        e.preventDefault();
+        const title = document.getElementById('title').value;
+        const description = document.getElementById('description').value;
+        const attachment = document.getElementById('attachment').files[0];
+
+        const news = { title, description, date: new Date().toLocaleString() };
+        
+        if (attachment) {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                news.attachment = event.target.result;
+                news.attachmentType = attachment.type;
+                saveNews(news);
+                displayNews(news);
+                newsForm.reset();
+                adminModal.style.display = 'none';
+            };
+            if (attachment.type.startsWith('image/')) {
+                reader.readAsDataURL(attachment);
+            } else {
+                news.attachmentName = attachment.name;
+                saveNews(news);
+                displayNews(news);
+                newsForm.reset();
+                adminModal.style.display = 'none';
+            }
+        } else {
+            saveNews(news);
+            displayNews(news);
+            newsForm.reset();
+            adminModal.style.display = 'none';
         }
-    })
-    .then(response => response.json())
-    .then(posts => {
-        const container = document.getElementById("posts-container");
-        container.innerHTML = "";  // Pulisce i post prima di ricaricare
+    });
 
-        posts.reverse().forEach(post => {
-            const postElement = document.createElement("div");
-            postElement.classList.add("post");
-            postElement.innerHTML = `
-                <h2>${post.title}</h2>
-                <p>${post.content}</p>
-                <small>${new Date(post.created_at).toLocaleString()}</small>
-                <div class="like-dislike">
-                    <button class="like" onclick="updateLikes(${post.id}, 'like')">👍 ${post.likes || 0}</button>
-                    <button class="dislike" onclick="updateLikes(${post.id}, 'dislike')">👎 ${post.dislikes || 0}</button>
-                </div>
-            `;
-            container.appendChild(postElement);
-        });
-    })
-    .catch(error => console.error("Errore nel caricamento dei post:", error));
-}
+    function displayNews(news) {
+        const newsItem = document.createElement('div');
+        newsItem.className = 'news-item';
+        newsItem.innerHTML = `
+            <h2>${news.title}</h2>
+            <p>${news.description}</p>
+            <small>Pubblicato il: ${news.date}</small>
+            ${news.attachment && news.attachmentType && news.attachmentType.startsWith('image/') 
+                ? `<img src="${news.attachment}" alt="${news.title}">`
+                : news.attachmentName ? `<p><a href="#" onclick="alert('Download non disponibile in questa demo.')">${news.attachmentName}</a></p>` : ''}
+        `;
+        newsContainer.prepend(newsItem);
+    }
 
-function updateLikes(postId, type) {
-    let column = type === "like" ? "likes" : "dislikes";
+    function saveNews(news) {
+        const newsList = JSON.parse(localStorage.getItem('news') || '[]');
+        newsList.push(news);
+        localStorage.setItem('news', JSON.stringify(newsList));
+    }
 
-    fetch(`${SUPABASE_URL}/rest/v1/posts?id=eq.${postId}`, {
-        method: "PATCH",
-        headers: {
-            "apikey": SUPABASE_API_KEY,
-            "Authorization": `Bearer ${SUPABASE_API_KEY}`,
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ [column]: { "increment": 1 } })
-    })
-    .then(() => loadPosts())
-    .catch(error => console.error("Errore nell'aggiornamento del like/dislike:", error));
-}
+    function loadNews() {
+        const newsList = JSON.parse(localStorage.getItem('news') || '[]');
+        newsList.forEach(displayNews);
+    }
+});
