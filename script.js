@@ -1,4 +1,4 @@
-// ShipUp Blog - v1.2.3
+// ShipUp Blog - v1.2.5
 document.addEventListener('DOMContentLoaded', () => {
     if (typeof window.supabase === 'undefined') {
         console.error('Errore: la libreria Supabase non è caricata. Controlla il CDN nel file index.html.');
@@ -145,6 +145,10 @@ document.addEventListener('DOMContentLoaded', () => {
             if (fetchError.code === '42P01') { // Tabella non esiste
                 console.error('Errore: la tabella "post_views" non esiste. Crea la tabella su Supabase con: CREATE TABLE public.post_views (post_id INTEGER PRIMARY KEY REFERENCES public.posts(id), views INTEGER DEFAULT 0);');
                 alert('La tabella delle visualizzazioni non esiste. Crea la tabella su Supabase e riprova.');
+                return;
+            } else if (fetchError.code === '42501') { // Violazione RLS
+                console.error('Errore: violazione RLS sulla tabella "post_views". Controlla le policy RLS su Supabase per la tabella "post_views". Verifica che esista la policy "Allow anon updates" con USING (true) e WITH CHECK (true).', fetchError);
+                alert(`Errore nell’aggiornamento delle visualizzazioni: violazione RLS. Controlla le policy su Supabase per 'post_views'.`);
                 return;
             } else if (fetchError.code !== 'PGRST116') { // PGRST116 = record non trovato
                 console.error('Errore nel recupero delle visualizzazioni (RLS?):', fetchError);
