@@ -1,4 +1,4 @@
-/* ShipUp Blog - v1.3.0 */
+/* ShipUp Blog - v1.3.3 */
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
@@ -106,7 +106,7 @@ header {
     font-size: 0.9rem;
 }
 
-.edit-button, .delete-button {
+.edit-button, .delete-button, #newPostBtn {
     padding: 6px 12px;
     margin-right: 5px;
     background-color: #4a5a6a;
@@ -119,7 +119,7 @@ header {
     display: inline-block;
 }
 
-.edit-button:hover, .delete-button:hover {
+.edit-button:hover, .delete-button:hover, #newPostBtn:hover {
     background-color: #f5e050;
 }
 
@@ -229,6 +229,12 @@ header {
     transform: translateY(-2px);
 }
 
+/* Aggiunto stile per #newPostBtn nel modal admin */
+#adminModal .modal-content #newPostBtn {
+    width: 100%;
+    margin-top: 20px;
+}
+
 /* Responsive */
 @media (max-width: 768px) { /* Tablet */
     .banner {
@@ -242,7 +248,7 @@ header {
     .news-image {
         margin: 10px 0;
     }
-    .attachment-link, .edit-button, .delete-button {
+    .attachment-link, .edit-button, .delete-button, #newPostBtn {
         padding: 6px 10px;
     }
 }
@@ -265,7 +271,7 @@ header {
     .news-image {
         margin: 8px 0;
     }
-    .attachment-link, .edit-button, .delete-button {
+    .attachment-link, .edit-button, .delete-button, #newPostBtn {
         padding: 4px 8px;
     }
     .read-button {
