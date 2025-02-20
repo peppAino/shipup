@@ -4,7 +4,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const adminBtn = document.getElementById('adminBtn');
     const closeBtn = document.querySelector('.close');
     const newsForm = document.getElementById('newsForm');
-    const adminPassword = '12345'; // Password per l'admin
+    const adminPassword = '12345'; // Password admin
+
+    // Verifica che tutti gli elementi esistano
+    if (!newsContainer || !adminModal || !adminBtn || !closeBtn || !newsForm) {
+        console.error('Uno o più elementi DOM non sono stati trovati.');
+        return;
+    }
 
     // Carica news salvate
     loadNews();
@@ -21,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Chiudi modal
     closeBtn.onclick = () => adminModal.style.display = 'none';
-    window.onclick = (e) => { if (e.target == adminModal) adminModal.style.display = 'none'; };
+    window.onclick = (e) => { if (e.target === adminModal) adminModal.style.display = 'none'; };
 
     // Gestione del form
     newsForm.onsubmit = (e) => {
@@ -57,7 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
             newsForm.reset();
             adminModal.style.display = 'none';
         }
-    });
+    };
 
     function displayNews(news) {
         const newsItem = document.createElement('div');
@@ -80,7 +86,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function loadNews() {
-        const newsList = JSON.parse(localStorage.getItem('news') || '[]');
-        newsList.forEach(displayNews);
+        try {
+            const newsList = JSON.parse(localStorage.getItem('news') || '[]');
+            newsList.forEach(displayNews);
+        } catch (error) {
+            console.error('Errore nel caricamento delle news:', error);
+        }
     }
 });
