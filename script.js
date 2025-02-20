@@ -1,4 +1,4 @@
-// ShipUp Blog - v1.2.5
+// ShipUp Blog - v1.2.8
 document.addEventListener('DOMContentLoaded', () => {
     if (typeof window.supabase === 'undefined') {
         console.error('Errore: la libreria Supabase non è caricata. Controlla il CDN nel file index.html.');
@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
-    const supabaseClient = window.supabase.createClient('https://amxtzqdawysnqpjnsgic.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFteHR6cWRhd3lzbnFwam5zZ2ljIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzk5MzA2NTgsImV4cCI6MjA1NTUwNjY1OH0.HNaCFBQ-BsJB4djiskK02r84Wwik-XJf5EPw2gq7ghY');
+    const supabaseClient = window.supabase.createClient('https://tuo-progetto.supabase.co', 'tua-anon-key');
 
     const newsContainer = document.getElementById('newsContainer');
     const adminModal = document.getElementById('adminModal');
@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 .upload(fileName, attachment, { upsert: false });
             if (error) {
                 console.error('Errore caricamento allegato (RLS?):', error);
-                alert(`Errore nel caricamento dell’allegato: ${error.message}. Controlla le policy RLS su Supabase.`);
+                alert(`Errore nel caricamento dell’allegato: ${error.message}. Controlla le policy RLS su Supabase per il bucket 'attachments'. Verifica che esista la policy 'Allow anon uploads' con FOR INSERT, USING (true) e WITH CHECK (true).`);
                 return;
             }
             const { data: urlData } = supabaseClient.storage
@@ -74,15 +74,25 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     function displayPost(post) {
+        // Formatta la data/ora nel formato "DD/MM/YYYY HH:MM"
+        const date = new Date(post.created_at);
+        const formattedDate = date.toLocaleString('it-IT', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        }).replace(',', ''); // Rimuove la virgola per un formato più pulito, es. "20/02/2025 14:30"
+
         const newsItem = document.createElement('div');
         newsItem.className = 'news-item';
         newsItem.innerHTML = `
             <h2>${post.title}</h2>
             <p>${post.description}</p>
-            <small>Pubblicato il: ${post.created_at}</small>
             ${post.attachment_url && post.attachment_url.includes('image') 
-                ? `<img src="${post.attachment_url}" alt="${post.title}">`
-                : post.attachment_url ? `<p><a href="${post.attachment_url}" target="_blank">Scarica allegato</a></p>` : ''}
+                ? `<img src="${post.attachment_url}" alt="${post.title}" class="news-image">`
+                : post.attachment_url ? `<p><a href="${post.attachment_url}" target="_blank" class="attachment-link">Scarica allegato (${getFileType(post.attachment_url)})</a></p>` : ''}
+            <small>Pubblicato il: ${formattedDate}</small>
             <button class="read-button" data-post-id="${post.id}">Ho letto</button>
             <div class="view-count">Visualizzazioni: <span id="view-count-${post.id}">0</span></div>
         `;
@@ -97,6 +107,14 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         updateViewCount(post.id);
+    }
+
+    // Funzione per determinare il tipo di file dall'URL
+    function getFileType(url) {
+        if (url.endsWith('.pdf')) return 'PDF';
+        if (url.endsWith('.xlsx') || url.endsWith('.xls')) return 'Excel';
+        if (url.endsWith('.doc') || url.endsWith('.docx')) return 'Word';
+        return 'file';
     }
 
     async function loadPosts() {
@@ -147,7 +165,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 alert('La tabella delle visualizzazioni non esiste. Crea la tabella su Supabase e riprova.');
                 return;
             } else if (fetchError.code === '42501') { // Violazione RLS
-                console.error('Errore: violazione RLS sulla tabella "post_views". Controlla le policy RLS su Supabase per la tabella "post_views". Verifica che esista la policy "Allow anon updates" con USING (true) e WITH CHECK (true).', fetchError);
+                console.error('Errore: violazione RLS sulla tabella "post_views". Controlla le policy RLS su Supabase per la tabella "post_views". Verifica che esista la policy "Allow anon updates" con FOR INSERT, UPDATE, USING (true) e WITH CHECK (true).', fetchError);
                 alert(`Errore nell’aggiornamento delle visualizzazioni: violazione RLS. Controlla le policy su Supabase per 'post_views'.`);
                 return;
             } else if (fetchError.code !== 'PGRST116') { // PGRST116 = record non trovato
@@ -169,7 +187,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if (updateError) {
             console.error('Errore nell’aggiornamento delle visualizzazioni (RLS?):', updateError);
-            alert(`Errore nell’aggiornamento delle visualizzazioni: ${updateError.message}. Controlla le policy RLS su Supabase per la tabella 'post_views'.`);
+            alert(`Errore nell’aggiornamento delle visualizzazioni: ${updateError.message}. Controlla le policy RLS su Supabase per la tabella 'post_views'. Verifica che esista la policy "Allow anon updates" con FOR INSERT, UPDATE, USING (true) e WITH CHECK (true).`);
             return;
         }
 
