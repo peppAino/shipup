@@ -1,4 +1,4 @@
-<!-- ShipUp Blog - v1.3.0 -->
+<!-- ShipUp Blog - v1.3.3 -->
 <!DOCTYPE html>
 <html lang="it">
 <head>
@@ -20,6 +20,15 @@
     <div id="adminModal" class="modal">
         <div class="modal-content">
             <span class="close">×</span>
+            <h2>Opzioni Admin</h2>
+            <button id="newPostBtn">Pubblica Nuova News</button>
+        </div>
+    </div>
+
+    <!-- Modal per inserire una nuova news -->
+    <div id="newsModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="newsClose">×</span>
             <h2>Pubblica una News</h2>
             <form id="newsForm">
                 <input type="text" id="title" placeholder="Titolo" required>
