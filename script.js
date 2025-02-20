@@ -1,4 +1,4 @@
-// ShipUp Blog - v1.3.0
+// ShipUp Blog - v1.3.1
 document.addEventListener('DOMContentLoaded', () => {
     if (typeof window.supabase === 'undefined') {
         console.error('Errore: la libreria Supabase non è caricata. Controlla il CDN nel file index.html.');
@@ -192,8 +192,12 @@ document.addEventListener('DOMContentLoaded', () => {
                         .delete()
                         .eq('id', post.id);
                     if (error) {
-                        console.error('Errore cancellazione post (RLS?):', error);
-                        alert(`Errore nella cancellazione del post: ${error.message}. Controlla le policy RLS su Supabase per la tabella 'posts'. Verifica che esista la policy 'Allow admin deletes' con USING (true) e WITH CHECK (true).`);
+                        console.error('Errore cancellazione post (RLS o vincolo?):', error);
+                        if (error.message.includes('foreign key constraint')) {
+                            alert(`Errore nella cancellazione del post: ${error.message}. Il vincolo di chiave esterna su 'read_confirmations' blocca la cancellazione. Modifica il vincolo su Supabase con ON DELETE CASCADE o elimina i record correlati in 'read_confirmations'. Controlla anche le policy RLS su Supabase per la tabella 'posts'. Verifica che esista la policy 'Allow admin deletes' con USING (true) e WITH CHECK (true).`);
+                        } else {
+                            alert(`Errore nella cancellazione del post: ${error.message}. Controlla le policy RLS su Supabase per la tabella 'posts'. Verifica che esista la policy 'Allow admin deletes' con USING (true) e WITH CHECK (true).`);
+                        }
                         return;
                     }
                     newsItem.remove();
