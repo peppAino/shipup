@@ -1,89 +1,147 @@
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f4f4f4;
+    background-color: #f4f4f9;
 }
 
 header {
-    background-color: #007BFF;
+    background: linear-gradient(90deg, #ff6b6b, #4ecdc4);
     color: white;
-    padding: 15px;
     text-align: center;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    padding: 2rem;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
 
-h1 {
+header h1 {
     margin: 0;
+    font-size: 2.5rem;
 }
 
-.admin-button {
-    background-color: #28a745;
-    color: white;
+#adminBtn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    padding: 10px 20px;
+    background-color: #fff;
     border: none;
-    padding: 10px;
-    cursor: pointer;
     border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s;
 }
 
-.admin-button:hover {
-    background-color: #218838;
+#adminBtn:hover {
+    background-color: #ddd;
 }
 
-main {
-    max-width: 800px;
-    margin: auto;
-    padding: 20px;
+.news-container {
+    max-width: 900px;
+    margin: 20px auto;
+    padding: 0 20px;
+    display: grid;
+    gap: 20px;
 }
 
-.post {
+.news-item {
     background: white;
     padding: 20px;
-    margin: 10px 0;
-    border-radius: 8px;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    transition: transform 0.2s;
 }
 
-.post h2 {
-    margin: 0;
-    color: #333;
+.news-item:hover {
+    transform: translateY(-5px);
 }
 
-.post p {
-    color: #666;
-    margin-top: 5px;
+.news-item h2 {
+    color: #ff6b6b;
+    margin: 0 0 10px;
 }
 
-.like-dislike {
-    display: flex;
-    justify-content: space-between;
+.news-item p {
+    color: #555;
+}
+
+.news-item img {
+    max-width: 100%;
+    border-radius: 5px;
     margin-top: 10px;
 }
 
-.like, .dislike {
-    border: none;
-    padding: 10px;
+.news-item a {
+    color: #4ecdc4;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+/* Modal Admin */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.close {
+    float: right;
+    font-size: 24px;
     cursor: pointer;
+}
+
+#newsForm {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+#newsForm input, #newsForm textarea {
+    padding: 10px;
+    border: 1px solid #ddd;
     border-radius: 5px;
-    font-size: 16px;
+    font-size: 1rem;
 }
 
-.like {
-    background-color: #28a745;
+#newsForm textarea {
+    height: 100px;
+    resize: vertical;
+}
+
+#newsForm button {
+    padding: 10px;
+    background-color: #ff6b6b;
     color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
 }
 
-.like:hover {
-    background-color: #218838;
+#newsForm button:hover {
+    background-color: #e55a5a;
 }
 
-.dislike {
-    background-color: #dc3545;
-    color: white;
-}
-
-.dislike:hover {
-    background-color: #c82333;
+/* Responsive */
+@media (max-width: 600px) {
+    header h1 {
+        font-size: 1.8rem;
+    }
+    .news-container {
+        padding: 0 10px;
+    }
 }
