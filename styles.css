@@ -1,4 +1,4 @@
-/* ShipUp Blog - v1.1.7 */
+/* ShipUp Blog - v1.2.0 */
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
@@ -17,7 +17,7 @@ header {
 
 .banner {
     width: 100%;
-    max-height: 300px; /* Aumentata per mostrare l’intera immagine */
+    max-height: 320px; /* Basato su 1920x320, adatta se diverso */
     object-fit: contain; /* Mostrerà l’intera immagine, con spazi vuoti se necessario */
 }
 
@@ -87,6 +87,27 @@ header {
 
 .news-item a:hover {
     color: #f5e050; /* Giallo al hover */
+}
+
+.read-button {
+    padding: 8px 16px;
+    background-color: #4a5a6a;
+    border: none;
+    border-radius: 5px;
+    color: #ffffff;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 10px;
+}
+
+.read-button:hover {
+    background-color: #f5e050;
+}
+
+.view-count {
+    font-size: 0.9rem;
+    color: #d9d9d9;
+    margin-top: 5px;
 }
 
 /* Modal Admin */
@@ -161,9 +182,20 @@ header {
 }
 
 /* Responsive */
-@media (max-width: 600px) {
+@media (max-width: 768px) { /* Tablet */
     .banner {
-        max-height: 150px; /* Altezza ridotta per mobile, mostrando l’intera immagine */
+        max-height: 160px;
+    }
+    #adminBtn {
+        top: 15px;
+        right: 15px;
+        padding: 10px 20px;
+    }
+}
+
+@media (max-width: 480px) { /* Mobile */
+    .banner {
+        max-height: 120px;
     }
     header {
         padding: 0;
@@ -175,5 +207,8 @@ header {
         top: 10px;
         right: 10px;
         padding: 8px 16px;
+    }
+    .read-button {
+        padding: 6px 12px;
     }
 }
