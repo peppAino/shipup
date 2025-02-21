@@ -278,4 +278,8 @@ document.addEventListener('DOMContentLoaded', () => {
     async function updateViewCount(postId) {
         const lastView = localStorage.getItem(`view_${postId}`);
         const now = Date.now();
-        if (lastView && (now - lastView) < 86400000) { //
+        if (lastView && (now - lastView) < 86400000) { // 24 ore
+            return;
+        }
+
+        const { data: existing
