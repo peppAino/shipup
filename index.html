@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="icon" type="image/x-icon" href="favicon.ico"> <!-- O usa favicon.png -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script> <!-- Libreria per la crittografia -->
 </head>
 <body>
     <header>
@@ -15,6 +16,7 @@
         <div class="admin-buttons">
             <button id="adminLoginBtn">Area Admin</button>
             <button id="newPostBtn" style="display: none;">Pubblica Nuova News</button>
+            <button id="adminLogoutBtn" style="display: none;">Esci</button> <!-- Pulsante di uscita -->
         </div>
     </header>
 
@@ -49,6 +51,7 @@
         </div>
     </div>
 
+    <script src="config.js"></script> <!-- Caricamento del file di configurazione -->
     <script src="script.js"></script>
 </body>
 </html>
