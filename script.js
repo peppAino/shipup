@@ -282,4 +282,6 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        const { data: existing
+        const { data: existingViews, error: fetchError } = await supabaseClient
+            .from('post_views')
+            .select('
